@@ -9,7 +9,7 @@ const prismaClient = new prisma();
 
 async function getUsersPerDayAndSubject(date) {
   const copy = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0)
-  console.log(copy);
+  // console.log(copy +" dovrebbe essere formattata....");
   const query = await prismaClient.date.findMany({
     where: {
       date: copy,
