@@ -118,6 +118,22 @@ p {
   text-align: center;
   margin: auto;
 }
+.priority_1{
+  display: inline-block;
+  width: fit-content;
+  background-color: orangered;
+}
+.priority_2{
+  display: inline-block;
+  width: fit-content;
+  background-color: rgb(245, 200, 0);
+}
+.priority_3{
+  display: inline-block;
+  width: fit-content;
+  background-color: rgb(105, 248, 9);
+}
+
 .gridCell {
   border-radius: 12px;
   background: #ffffff;

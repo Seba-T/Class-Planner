@@ -7,11 +7,14 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-model User {
+model User {             
   id      Int            @id @default(autoincrement())
   googlId String         @unique
+  coockie String  
   name    String
   surname String
+  lastViewOption String
+  lastDate Date
   dates   DatesOnUsers[]
 }
 

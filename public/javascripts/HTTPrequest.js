@@ -1,7 +1,7 @@
 
 
  async function displayCalendarGrid (viewOption, date){
- const response = await fetch(`http://localhost:3000/api/date/${date.toISOString()}/viewOption/${viewOption}`);
+ const response = await fetch(`http://localhost:3000/src/date/${date.toISOString()}/viewOption/${viewOption}`);
  const html = await response.text()
  console.log(response);
  document.querySelector("#app-calendar").innerHTML = html;
