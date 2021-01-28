@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" style="font-family: sans-serif">
+  <title>Calendar App</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-signin-scope" content="profile email" />
+    <meta
+      name="google-signin-client_id"
+      content="900965066281-tcj9qciujqodr2bs6sl4hc85mhmips1b.apps.googleusercontent.com.apps.googleusercontent.com"
+    />
+    <link rel="stylesheet" href="./stylesheets/style.css" />
+  </head>
+  <body>
+    <div class="top-bar">5D Planner</div>
+    <div class="container">
+      <div
+        class="dropdown"
+        style="margin-left: calc(100% / 12); margin-right: calc(100% / 12 * 3)"
+      >
+        <p id="date"></p>
+      </div>
+      <div
+        class="dropdown"
+        style="margin-left: calc(100% / 12 * 3); margin-right: calc(100% / 12)"
+      >
+        <button class="currentViewOption"></button>
+        <div class="dropdown-content">
+          <div id="0" class="dropdownElm">Day</div>
+          <div id="1" class="dropdownElm">Week</div>
+          <div id="2" class="dropdownElm">Month</div>
+          <div id="3" class="dropdownElm">Year</div>
+        </div>
+      </div>
+      <div class="arrow left col-1">&#8592;</div>
+      <div id="app-calendar" class="col-10"></div>
+      <div class="arrow right col-1">&#8594;</div>
+    </div>
+  </body>
+  <script src="https://apis.google.com/js/platform.js" async defer>
+        gapi.load('auth2', function () {
+          gapi.auth2.init();
+        });
+        function onSignIn(googleUser) {
+      var id_token = googleUser.getAuthResponse().id_token;
+    }
+  </script>
+
+  <script src="./javascripts/state.js"></script>
+  <!-- <script src="./javascripts/settings.json"></script> -->
+
+  <script src="./javascripts/script.js"></script>
+  <script src="./javascripts/dateHelper.js"></script>
+  <script src="./javascripts/HTTPrequest.js"></script>
+  <script src="./javascripts/viewUtilities.js"></script>
+</html>

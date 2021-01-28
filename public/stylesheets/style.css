@@ -1,0 +1,198 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  -webkit-user-select: none;
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  user-select: none;
+  font-family: sans-serif;
+  opacity: 0;
+  transition: opacity 1s cubic-bezier(0.37, 0.64, 0.96, 0.01);
+  /* Extra small devices (phones, 600px and down) */
+}
+@media only screen and (max-width: 600px) {
+  #app-calendar {
+    max-height: 300px;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .dropdown {
+    min-height: 4.25rem;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .cellTitle {
+    font-size: 8px;
+    width: inherit;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+}
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  #app-calendar {
+    max-height: 400px;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  /* .dropdown {
+    font-size: larger;
+  }
+  .currentViewOption {
+    font-size: larger;
+  } */
+  .gridCell {
+    padding-bottom: 5%;
+    padding-top: 2%;
+  }
+}
+@media only screen and (min-width: 992px) {
+  #app-calendar {
+    max-height: 600px;
+  }
+}
+.col-1 {
+  width: 8.33%;
+}
+.col-2 {
+  width: 16.66%;
+}
+.col-3 {
+  width: 25%;
+}
+.col-4 {
+  width: 33.33%;
+}
+.col-5 {
+  width: 41.66%;
+}
+.col-6 {
+  width: 50%;
+}
+.col-7 {
+  width: 58.33%;
+}
+.col-8 {
+  width: 66.66%;
+}
+.col-9 {
+  width: 75%;
+}
+.col-10 {
+  width: 83.33%;
+}
+.col-11 {
+  width: 91.66%;
+}
+.col-12 {
+  width: 100%;
+}
+.container {
+  position: static;
+  width: 100%;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+p {
+  margin-block: 0;
+}
+ .calendarGrid {  /*.calendarGrid */
+  display: grid;
+  height: 600px;
+}
+
+#nest1,
+#nest2,
+#nest3,
+#nest4 {
+  position: relative;
+  display: grid;
+}
+#date {
+  text-align: center;
+  margin: auto;
+}
+.gridCell {
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: inset -5px -4px 0px 0px #cccccc, -5px -5px 50px #ffffff;
+  width: auto;
+  padding-top: 4px;
+  align-self: stretch;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 200ms, color 200ms;
+}
+.weekend {
+  color: seagreen;
+}
+.hideCont {
+  display: none;
+}
+
+.cellContent {
+  font-size: 15px;
+  margin: 0;
+}
+
+.gridCell:hover {
+  background-color: rgb(255, 153, 221);
+  color: white;
+}
+.arrow {
+  font-size: 60px;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.top-bar {
+  text-align: center;
+  font-size: 40px;
+  font-family: auto;
+}
+.currentViewOption {
+  text-align: center;
+  margin: auto;
+  font-size: 15px;
+  background: #ffffff;
+  border: none;
+}
+.dropdown {
+  display: flex;
+  border-radius: 19px;
+  background: #ffffff;
+  box-shadow: 16px 16px 33px #d9d9d9, -16px -16px 33px #ffffff;
+  padding: 16px 0px;
+  border: 0px;
+  margin-bottom: 4px;
+  width: calc(100% / 12 * 2);
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  min-width: 160px;
+}
+.dropdownElm {
+  margin: 4px;
+  border-radius: 50px;
+  background: #ffffff;
+  box-shadow: inset -4px -4px 0px 0px #d9d9d9, 20px -20px 60px #ffffff;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  cursor: pointer;
+  transition: background-color 200ms, color 200ms;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdownElm:hover {
+  background-color: #ddd;
+}
