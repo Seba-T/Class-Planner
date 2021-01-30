@@ -23,9 +23,12 @@ async function pickUpWhereYouLeftOff() {
   let response = await fetch(`${domainName}/getview`);
   if (response.ok) {
     const returnedJSON = await response.text();
-    console.log(returnedJSON);
     return JSON.parse(returnedJSON);
   } else {
     document.write("HTTP error: " + response.status);
   }
+}
+async function newPage() {
+  let response = await fetch(`${domainName}/newView`);
+
 }

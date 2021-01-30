@@ -102,8 +102,9 @@ body {
 p {
   margin-block: 0;
 }
- .calendarGrid {  /*.calendarGrid */
+.calendarGrid {
   display: grid;
+  align-self: stretch;
   height: 600px;
 }
 
@@ -118,20 +119,43 @@ p {
   text-align: center;
   margin: auto;
 }
-.priority_1{
-  display: inline-block;
+.priority_0 {
+  border-radius: 51px;
+  padding: 3px 10px;
+  margin: auto;
+  margin-top: 5px;
+  display: block;
   width: fit-content;
-  background-color: orangered;
+  text-transform: capitalize;
+  background-color: #eaaf6c;
 }
-.priority_2{
-  display: inline-block;
+.priority_2 {
+  border-radius: 51px;
+  padding: 3px 10px;
+  margin: auto;
+  margin-top: 5px;
+  display: block;
   width: fit-content;
-  background-color: rgb(245, 200, 0);
+  text-transform: capitalize;
+  background-color: #d1b3d5;
 }
-.priority_3{
-  display: inline-block;
+.priority_3 {
+  border-radius: 51px;
+  padding: 3px 10px;
+  margin: auto;
+  margin-top: 5px;
+  display: block;
   width: fit-content;
-  background-color: rgb(105, 248, 9);
+  text-transform: capitalize;
+  background-color: #b1d2ac;
+}
+.availableDate {
+  background: green !important;
+  transition: background-color 200ms, color 200ms;
+}
+.availableDate:hover {
+  background-color: rgb(248, 7, 7);
+  color: white;
 }
 
 .gridCell {
@@ -145,6 +169,10 @@ p {
   cursor: pointer;
   transition: background-color 200ms, color 200ms;
 }
+.gridCell:hover {
+  background-color: rgb(255, 153, 221);
+  color: white;
+}
 .weekend {
   color: seagreen;
 }
@@ -157,10 +185,6 @@ p {
   margin: 0;
 }
 
-.gridCell:hover {
-  background-color: rgb(255, 153, 221);
-  color: white;
-}
 .arrow {
   font-size: 60px;
   align-self: center;

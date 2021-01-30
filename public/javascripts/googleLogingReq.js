@@ -8,8 +8,6 @@ function init() {
 }
 function onSignIn(googleUser) {
   const id_token = googleUser.getAuthResponse().id_token;
-  // console.log("idtoken=" + id_token);
-  const profile = googleUser.getBasicProfile();
   // fetch(`${domainName}/tokensignin`, {
   //   method: "POST",
   //   headers: {

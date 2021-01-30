@@ -1,6 +1,6 @@
 function clearPage(value) {
   let elements = new Array();
-  const elementsSelectors = ["#app-calendar", "#date", " .currentViewOption"];
+  const elementsSelectors = [".app-calendar", "#date", " .currentViewOption"];
   elementsSelectors.forEach((elm) =>
     elements.push(document.querySelector(elm))
   );
@@ -15,9 +15,8 @@ function clearPage(value) {
       value * 2
     )
   );
-
-  elements[0].innerHTML = "";
 }
+
 
 // clearPage = animationHandler(clearPage, false);
 
@@ -40,7 +39,6 @@ document.querySelectorAll(".dropdownElm").forEach((viewOption) => {
     });
   });
 });
-
 
 const smallDevice = window.matchMedia("(max-width: 600px)");
 

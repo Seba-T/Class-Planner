@@ -7,15 +7,8 @@ const prisma = require("@prisma/client").PrismaClient;
 const prismaClient = new prisma();
 
 async function getUsersPerDayAndSubject(date) {
-  const copy = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate(),
-    0,
-    0,
-    0
-  );
-  // console.log(copy +" dovrebbe essere formattata....");
+  const copy = new Date(date.getTime());
+  copy.setHours(1, 0, 0, 0);
   const query = await prismaClient.date.findMany({
     where: {
       date: copy,
@@ -40,7 +33,7 @@ async function getUsersPerDayAndSubject(date) {
     elm.users.sort((a, b) => a.priority - b.priority);
     resp[elm.Subject.name] = elm.users;
   });
-  // console.log(resp);
+  console.log(resp);
   return query.length > 0 ? resp : false;
 }
 
@@ -50,16 +43,23 @@ async function getVis(viewOption, startDay) {
       const users = await getUsersPerDayAndSubject(startDay);
       const grdRows = schedule[startDay.getDay() - 1]?.length;
       const grdClms = 1;
+      let notUsed = true;
       const cellContent = schedule[startDay.getDay() - 1].map((subj) => {
         // array full of subjects, ordered by hour
         return {
           title: subj,
-          users: users.hasOwnProperty(subj)
-            ? users[subj].map((user) => [
-                user.User.surname + " " + user.User.name,
-                user.priority,
-              ])
-            : false,
+          users:
+            users.hasOwnProperty(subj) && notUsed
+              ? users[subj].map((user) => {
+                  notUsed = false;
+                  return [
+                    user.User.surname.toLowerCase() +
+                      " " +
+                      user.User.name.toLowerCase(),
+                    user.priority,
+                  ];
+                })
+              : false,
           date: new Date(startDay.getTime()).toISOString(),
         };
       });
@@ -77,13 +77,18 @@ async function getVis(viewOption, startDay) {
       let newDate = new Date(startDay.getTime());
       for (let day = 0; day < grdClms; day++) {
         const users = await getUsersPerDayAndSubject(newDate);
+        let notUsed = true;
         schedule[day].forEach((subj, indexSubj) => {
           const index = day + indexSubj * grdClms;
           cellContent[index] = {
             title: subj,
-            users: users.hasOwnProperty(subj)
-              ? users[subj].map((user) => [user.User.surname, user.priority])
-              : false,
+            users:
+              users.hasOwnProperty(subj) && notUsed
+                ? users[subj].map((user) => {
+                    notUsed = false;
+                    return [user.User.surname.toLowerCase(), user.priority];
+                  })
+                : false,
             date: new Date(newDate.getTime()).toISOString(),
           };
         });
@@ -93,7 +98,6 @@ async function getVis(viewOption, startDay) {
     }
 
     case "Month": {
-      console.log(startDay.toString());
       const grdRows = 5;
       const grdClms = 7;
       const cellNumb = grdRows * grdClms;
@@ -108,7 +112,9 @@ async function getVis(viewOption, startDay) {
           title:
             (day < 7 ? getWeekday.format(newDate) + "<br>" : "") +
             newDate.getDate(),
-          users: await getUsersPerDayAndSubject(newDate),
+          users: (await getUsersPerDayAndSubject(newDate))
+            ? "availableDate"
+            : " ",
           date: new Date(newDate.getTime()).toISOString(),
         };
         dateHelper.addDays(newDate, 1);
@@ -119,11 +125,19 @@ async function getVis(viewOption, startDay) {
     case "Year": {
       const grdRows = 2;
       const grdClms = 2;
-      const cellContent = new Array(4).fill("").map(async (a) => {
-        const newDate = startDay.setMonth(startDay.getMonth() + 1);
-        return displayCalendarGrid("Month", new Date(newDate));
-      });
+      const cellTitles = await Promise.all(
+        new Array(4).fill("").map(async (_, index) => {
+          const newDate = new Date(startDay.getTime());
 
+          newDate.setMonth(newDate.getMonth() + index + 1);
+          return await displayCalendarGrid("Month", new Date(newDate));
+        })
+      );
+      const cellContent = cellTitles.map((title, index) => {
+        const newDate = new Date(startDay.getTime());
+        newDate.setMonth(newDate.getMonth() + index + 1);
+        return { title: title, date: newDate, users: false };
+      });
       return { cellContent, grdRows, grdClms };
     }
   }
@@ -151,7 +165,9 @@ async function displayCalendarGrid(viewOption, startDay) {
 
     gridContent.push(`
       <div
-        class="gridCell ${isWeekend[x] ? "weekend" : ""}"
+        class="gridCell ${
+          isWeekend[x] + (viewOption === "Month") ? cellContent[x].users : " "
+        }"
         onclick = "${onClickCode}">`);
 
     gridContent.push(`
@@ -160,7 +176,7 @@ async function displayCalendarGrid(viewOption, startDay) {
       </div>
     `);
 
-    if (cellContent[x].users) {
+    if (cellContent[x].users && viewOption !== "Month") {
       cellContent[x].users.forEach((user) =>
         gridContent.push(`<div class="priority_${user[1]}">${user[0]}</div>`)
       );
@@ -183,15 +199,15 @@ function getNewViewOption(prevViewOption) {
 function getIsWeekend(viewOption, startDay, cellNumb) {
   switch (viewOption) {
     case "Day":
-      return startDay.getDay() === 6;
+      return startDay.getDay() === 6 ? "weekend" : " ";
     case "Week":
-      return new Array(cellNumb).fill(false);
+      return new Array(cellNumb).fill(false).map((a) => (a ? "weekend" : " "));
     case "Month":
       return Array.from(Array(cellNumb), (_, index) => {
-        return Number.isInteger((index + 1) / 7);
+        return Number.isInteger((index + 1) / 7) ? "weekend" : " ";
       });
     case "Year":
-      return new Array(cellNumb).fill(false);
+      return new Array(cellNumb).fill("");
   }
 }
 

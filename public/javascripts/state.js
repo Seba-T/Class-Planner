@@ -29,9 +29,14 @@ window.state = {
       viewOption: newView.viewOption,
       date: newView.date,
     });
+    history.pushState(
+      { viewOption: newView.viewOption, date: newView.date.toString() },
+      null
+    );
     this._currentView.viewOption = newView.viewOption;
     this._currentView.date = newView.date;
     displayCalendarGrid(this._currentView._viewOption, this._currentView._date);
+    // clearPage(200);
   },
   get currentView() {
     return this._currentView;
@@ -95,7 +100,7 @@ window.state = {
       // change of view (like day, month, etc)
       options[viewOption].viewChange(date);
       console.log(date);
-    } 
+    }
     this.currentView = {
       viewOption,
       date,
@@ -124,6 +129,13 @@ function functionFireHandler(fn, parms) {
     }
   };
 }
+
+window.onpopstate = function (event) {
+  window.state.currentView = {
+    viewOption: event.state.viewOption,
+    date: new Date(event.state.date),
+  };
+};
 
 // export const state = {
 //   // metti le variabili qui
