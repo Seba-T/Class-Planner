@@ -1,5 +1,4 @@
-// import { addDays, getFirstDayOfWeek } from "./dateHelper.js";
-const dateHelper = require("./dateHelper.js");   
+const dateHelper = require("./dateHelper.js");
 
 const schedule = require("./schedule.json");
 
@@ -8,7 +7,14 @@ const prisma = require("@prisma/client").PrismaClient;
 const prismaClient = new prisma();
 
 async function getUsersPerDayAndSubject(date) {
-  const copy = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0)
+  const copy = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    0,
+    0,
+    0
+  );
   // console.log(copy +" dovrebbe essere formattata....");
   const query = await prismaClient.date.findMany({
     where: {
@@ -34,7 +40,7 @@ async function getUsersPerDayAndSubject(date) {
     elm.users.sort((a, b) => a.priority - b.priority);
     resp[elm.Subject.name] = elm.users;
   });
-  console.log(resp);
+  // console.log(resp);
   return query.length > 0 ? resp : false;
 }
 
@@ -42,7 +48,7 @@ async function getVis(viewOption, startDay) {
   switch (viewOption) {
     case "Day": {
       const users = await getUsersPerDayAndSubject(startDay);
-      const grdRows = schedule[startDay.getDay() - 1].length;
+      const grdRows = schedule[startDay.getDay() - 1]?.length;
       const grdClms = 1;
       const cellContent = schedule[startDay.getDay() - 1].map((subj) => {
         // array full of subjects, ordered by hour
@@ -54,10 +60,10 @@ async function getVis(viewOption, startDay) {
                 user.priority,
               ])
             : false,
-          date: startDay,  
+          date: new Date(startDay.getTime()).toISOString(),
         };
       });
-      console.log(cellContent);
+      // console.log(cellContent);
       return { cellContent, grdRows, grdClms };
     }
 
@@ -78,7 +84,7 @@ async function getVis(viewOption, startDay) {
             users: users.hasOwnProperty(subj)
               ? users[subj].map((user) => [user.User.surname, user.priority])
               : false,
-            date: newDate,
+            date: new Date(newDate.getTime()).toISOString(),
           };
         });
         dateHelper.addDays(newDate, 1);
@@ -87,6 +93,7 @@ async function getVis(viewOption, startDay) {
     }
 
     case "Month": {
+      console.log(startDay.toString());
       const grdRows = 5;
       const grdClms = 7;
       const cellNumb = grdRows * grdClms;
@@ -102,32 +109,29 @@ async function getVis(viewOption, startDay) {
             (day < 7 ? getWeekday.format(newDate) + "<br>" : "") +
             newDate.getDate(),
           users: await getUsersPerDayAndSubject(newDate),
-          date: newDate,
+          date: new Date(newDate.getTime()).toISOString(),
         };
         dateHelper.addDays(newDate, 1);
       }
       return { cellContent, grdRows, grdClms };
     }
 
-    case "Year":
+    case "Year": {
       const grdRows = 2;
       const grdClms = 2;
-      const cellContent = Array.from(
-        new Array(4),
-        async () =>
-          await displayCalendarGrid(
-            "Month",
-            startDay.setMonth(startDay.getMonth() + 3)
-          )
-      );
+      const cellContent = new Array(4).fill("").map(async (a) => {
+        const newDate = startDay.setMonth(startDay.getMonth() + 1);
+        return displayCalendarGrid("Month", new Date(newDate));
+      });
+
       return { cellContent, grdRows, grdClms };
+    }
   }
 }
 
-module.exports = async function displayCalendarGrid(viewOption, startDay) {
+async function displayCalendarGrid(viewOption, startDay) {
   const { grdClms, grdRows, cellContent } = await getVis(viewOption, startDay);
   // console.log(schedule);
-  cellContent.map((elm) => console.log(elm.date));
   const cellNumb = grdRows * grdClms;
   const isWeekend = getIsWeekend(viewOption, startDay, cellNumb);
 
@@ -141,7 +145,7 @@ module.exports = async function displayCalendarGrid(viewOption, startDay) {
     const onClickCode = `
       window.state.updateView({
         viewOption: '${getNewViewOption(viewOption)}',
-        date: '${cellContent[x].date.toISOString()}',
+        date: '${cellContent[x].date}',
         direction: 0
       })`;
 
@@ -170,10 +174,10 @@ module.exports = async function displayCalendarGrid(viewOption, startDay) {
       ${gridContent.join("")}
     </div>
   `;
-};
+}
 
 function getNewViewOption(prevViewOption) {
-  return prevViewOption === "Year"? "Month": "Day";
+  return prevViewOption === "Year" ? "Month" : "Day";
 }
 
 function getIsWeekend(viewOption, startDay, cellNumb) {
@@ -190,3 +194,5 @@ function getIsWeekend(viewOption, startDay, cellNumb) {
       return new Array(cellNumb).fill(false);
   }
 }
+
+module.exports = displayCalendarGrid;

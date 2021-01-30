@@ -7,13 +7,18 @@
     <meta name="google-signin-scope" content="profile email" />
     <meta
       name="google-signin-client_id"
-      content="900965066281-tcj9qciujqodr2bs6sl4hc85mhmips1b.apps.googleusercontent.com.apps.googleusercontent.com"
+      content="900965066281-tcj9qciujqodr2bs6sl4hc85mhmips1b.apps.googleusercontent.com"
     />
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="./stylesheets/style.css" />
   </head>
   <body>
     <div class="top-bar">5D Planner</div>
+    <div 
+      style="display: none"
+      class="g-signin2"
+      data-onsuccess="onSignIn"
+    ></div>
     <div class="container">
       <div
         class="dropdown"
@@ -38,29 +43,14 @@
       <div class="arrow right col-1">&#8594;</div>
     </div>
   </body>
-  <script src="https://apis.google.com/js/platform.js" async defer>
-        gapi.load('auth2', function () {
-          gapi.auth2.init();
-        });
-        function onSignIn(googleUser) {
-      const id_token = googleUser.getAuthResponse().id_token;
-      const profile = googleUser.getBasicProfile();
-      fetch('http://localhost:3000/tokensignin', {
-        method: POST,
-        headers: {
-          "content-Type": 'application/x-www-form-urlencoded'
-        },
-        body:{
-            idtoken:'idtoken=' + id_token,
-            name: profile.getGivenName(),
-            surname: profile.getFamilyName(),
-      }
-      })
-    }
-  </script>
+  <script
+    src="https://apis.google.com/js/platform.js?onload=init"
+    async
+    defer
+  ></script>
 
+  <script src="./javascripts/googleLogingReq.js"></script>
   <script src="./javascripts/state.js"></script>
-  <!-- <script src="./javascripts/settings.json"></script> -->
 
   <script src="./javascripts/script.js"></script>
   <script src="./javascripts/dateHelper.js"></script>

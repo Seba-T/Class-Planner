@@ -25,14 +25,13 @@ window.state = {
   },
   set currentView(newView) {
     // everytime the view is invoked
+    this._previousStates.push({
+      viewOption: newView.viewOption,
+      date: newView.date,
+    });
     this._currentView.viewOption = newView.viewOption;
     this._currentView.date = newView.date;
-    displayCalendarGrid(
-      this._currentView._viewOption,
-      this._currentView._date
-    ).then(() => {
-      postCurrentView(this._currentView._viewOption, this._currentView._date);
-    });
+    displayCalendarGrid(this._currentView._viewOption, this._currentView._date);
   },
   get currentView() {
     return this._currentView;
@@ -41,12 +40,7 @@ window.state = {
     // console.log(newView);
     const currentViewOption = this.currentView.viewOption;
     const currentDate = this.currentView.date;
-    let date = new Date(currentDate.getTime());
-
-    this._previousStates.push({
-      ...newView,
-      ...{ currentViewOption, currentDate },
-    });
+    const date = newView.date !== 0 ? new Date(newView.date) : currentDate;
 
     const viewOption =
       newView.viewOption !== 0 ? newView.viewOption : currentViewOption;
@@ -96,36 +90,16 @@ window.state = {
       const sign = newView.direction === "right" ? 1 : -1;
       options[viewOption].direction(date, sign);
       console.log(date);
-    } else if (newView.date === 0) {
+    } else if (newView.date === 0 && newView.viewOption !== 0) {
       // only viewOption contains a value  that's not 0
       // change of view (like day, month, etc)
       options[viewOption].viewChange(date);
       console.log(date);
-    } else if (newView.date !== 0 ) {
-      date = new Date(newView.date);
-      
-    }
-
+    } 
     this.currentView = {
       viewOption,
       date,
     };
-  },
-};
-
-window.serverRequestHandler = {
-  canUpdateState: true,
-  calledWhileOnTimeout: false,
-  lastParams: [],
-  callBackFunction: function () {
-    this.canUpdateState = false;
-    waitFunction(3000).then(() => {
-      this.canUpdateState = true;
-      if (this.calledWhileOnTimeout) {
-        postCurrentView(...this.lastParams);
-        this.calledWhileOnTimeout = false;
-      }
-    });
   },
 };
 

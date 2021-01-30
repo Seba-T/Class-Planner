@@ -16,7 +16,9 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "google-auth-library": "^6.1.6",
+    "google-oauth-jwt": "^0.2.0",
     "nodemon": "^2.0.7",
+    "sloc": "^0.2.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   },

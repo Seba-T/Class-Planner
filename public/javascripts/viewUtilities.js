@@ -33,11 +33,6 @@ rightArrow.addEventListener("click", () =>
 document.querySelectorAll(".dropdownElm").forEach((viewOption) => {
   //dropdown menu to select view
   viewOption.addEventListener("click", (a) => {
-    history.pushState(
-      { page: a.currentTarget.innerHTML },
-      null,
-      a.currentTarget.innerHTML
-    );
     window.state.updateView({
       viewOption: a.currentTarget.innerHTML,
       date: 0,
@@ -46,18 +41,6 @@ document.querySelectorAll(".dropdownElm").forEach((viewOption) => {
   });
 });
 
-function getNewViewOption(prevViewOption) {
-  switch (prevViewOption) {
-    case "Day":
-      return "Day";
-    case "Week":
-    case "Month":
-      return "Day";
-    case "Year":
-      return "Month";
-  }
-  return "";
-}
 
 const smallDevice = window.matchMedia("(max-width: 600px)");
 

@@ -4,5 +4,6 @@
   ["Filosofia", "Italiano", "Italiano", "Informatica", "Inglese"],
   ["Storia", "Matematica", "Inglese", "Scienze", "Scienze"],
   ["Fisica", "Fisica", "Ginnastica", "Ginnastica", "Arte"],
-  ["Informatica", "Scienze", "Matematica", "Italiano", "Matematica"]
+  ["Informatica", "Scienze", "Matematica", "Italiano", "Matematica"],
+  []
 ]

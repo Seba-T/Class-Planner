@@ -9,8 +9,8 @@ datasource db {
 
 model User {             
   id      Int            @id @default(autoincrement())
-  googlId String         @unique
-  coockie String         @default("1")
+  googleId String         @unique 
+  cookie String           @unique
   name    String         
   surname String        
   lastViewOption String @default("Month")
