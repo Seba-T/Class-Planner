@@ -33,15 +33,42 @@ async function getUsersPerDayAndSubject(date) {
     elm.users.sort((a, b) => a.priority - b.priority);
     resp[elm.Subject.name] = elm.users;
   });
-  console.log(resp);
+  // console.log(resp);
   return query.length > 0 ? resp : false;
 }
 
+async function getDatesPerMonth(date) {
+  const startDate = new Date(date.getTime());
+  startDate.setHours(1, 0, 0, 0);
+  const endDate = new Date(startDate);
+  endDate.setMonth(endDate.getMonth() + 1);
+  const query = await prismaClient.date.findMany({
+    where: {
+      AND: [
+        {
+          date: {
+            gte: startDate,
+          },
+        },
+        {
+          date: {
+            lte: endDate,
+          },
+        },
+      ],
+    },
+    select: {
+      date: true,
+    },
+  });
+  return query.map((elm) => elm.date);
+ 
+}
 async function getVis(viewOption, startDay) {
   switch (viewOption) {
     case "Day": {
       const users = await getUsersPerDayAndSubject(startDay);
-      const grdRows = schedule[startDay.getDay() - 1]?.length;
+      const grdRows = schedule[startDay.getDay() - 1].length;
       const grdClms = 1;
       let notUsed = true;
       const cellContent = schedule[startDay.getDay() - 1].map((subj) => {
@@ -63,7 +90,6 @@ async function getVis(viewOption, startDay) {
           date: new Date(startDay.getTime()).toISOString(),
         };
       });
-      // console.log(cellContent);
       return { cellContent, grdRows, grdClms };
     }
 
@@ -104,6 +130,7 @@ async function getVis(viewOption, startDay) {
       const cellContent = new Array(cellNumb);
       let newDate = new Date(startDay.getTime()); //firstWeekDayOfMonth
       dateHelper.getFirstDayOfWeek(newDate);
+      const availableDays = await getDatesPerMonth(newDate);
       getWeekday = new Intl.DateTimeFormat("en-US", {
         weekday: "short",
       });
@@ -112,11 +139,12 @@ async function getVis(viewOption, startDay) {
           title:
             (day < 7 ? getWeekday.format(newDate) + "<br>" : "") +
             newDate.getDate(),
-          users: (await getUsersPerDayAndSubject(newDate))
-            ? "availableDate"
-            : " ",
+          users: availableDays.find(
+            (date) => date.toDateString() === newDate.toDateString()
+          ),
           date: new Date(newDate.getTime()).toISOString(),
         };
+        // console.log(cellContent[day].users);
         dateHelper.addDays(newDate, 1);
       }
       return { cellContent, grdRows, grdClms };
@@ -129,13 +157,13 @@ async function getVis(viewOption, startDay) {
         new Array(4).fill("").map(async (_, index) => {
           const newDate = new Date(startDay.getTime());
 
-          newDate.setMonth(newDate.getMonth() + index + 1);
+          newDate.setMonth(newDate.getMonth() + index);
           return await displayCalendarGrid("Month", new Date(newDate));
         })
       );
       const cellContent = cellTitles.map((title, index) => {
         const newDate = new Date(startDay.getTime());
-        newDate.setMonth(newDate.getMonth() + index + 1);
+        newDate.setMonth(newDate.getMonth() + index);
         return { title: title, date: newDate, users: false };
       });
       return { cellContent, grdRows, grdClms };
@@ -156,23 +184,36 @@ async function displayCalendarGrid(viewOption, startDay) {
 
   const gridContent = [];
   for (let x = 0; x < cellNumb; x++) {
-    const onClickCode = `
-      window.state.updateView({
+    const onClickCode =
+      viewOption !== "Day" //&& new Date(cellContent[x].date).getDay() !== 0
+        ? `window.state.updateView({
         viewOption: '${getNewViewOption(viewOption)}',
         date: '${cellContent[x].date}',
         direction: 0
-      })`;
+      })`
+        : `signUpForDate({subject: '${cellContent[x].title}', date: '${cellContent[x].date}'})`;
 
     gridContent.push(`
       <div
-        class="gridCell ${
-          isWeekend[x] + (viewOption === "Month") ? cellContent[x].users : " "
-        }"
+        class="${viewOption !== "Year" ? "gridCell " : "gridCellYear "}${
+      isWeekend[x]
+    } ${cellContent[x].users ? " availableDate" : ""}" ${
+      cellContent[x].users && viewOption === "Day"
+        ? 'data-toggle="modal" data-target="#signUpForDate"'
+        : ""
+    }
         onclick = "${onClickCode}">`);
 
     gridContent.push(`
       <div class="cellContent">
-        ${cellContent[x].title}
+        ${
+          viewOption !== "Year" && viewOption !== "Month"
+            ? cellContent[x].title.trim().slice(0, 3) +
+              '<span class="hideCont">' +
+              cellContent[x].title.trim().slice(3) +
+              "</span>"
+            : cellContent[x].title
+        }
       </div>
     `);
 
@@ -199,7 +240,9 @@ function getNewViewOption(prevViewOption) {
 function getIsWeekend(viewOption, startDay, cellNumb) {
   switch (viewOption) {
     case "Day":
-      return startDay.getDay() === 6 ? "weekend" : " ";
+      return new Array(cellNumb).fill(
+        startDay.getDay() === 0 ? "weekend" : " "
+      );
     case "Week":
       return new Array(cellNumb).fill(false).map((a) => (a ? "weekend" : " "));
     case "Month":

@@ -20,7 +20,7 @@ window.state = {
     set viewOption(viewOption) {
       this._viewOption = viewOption;
       const viewButton = document.querySelector(" .currentViewOption");
-      viewButton.innerHTML = this._viewOption;
+      viewButton.innerHTML = this._viewOption + "   &#8681";
     },
   },
   set currentView(newView) {
@@ -82,10 +82,18 @@ window.state = {
       },
       Year: {
         direction: function (date, sign) {
-          date.setMonth(date.getMonth() + 3 * sign);
+          date.setMonth(date.getMonth() + 4 * sign);
         }, //// requires attentions
         viewChange: function (date) {
-          date.setMonth(0);
+          addDays(date, 6);
+          getFirstDayOfMonth(date);
+          for (let a = 0; a < 3; a++) {
+            if (date.getMonth() >= a * 4 && date.getMonth() < (a + 1) * 4) {
+              date.setMonth(a * 4);
+              console.log(date);
+              break;
+            }
+          }
         },
       },
     };
@@ -94,12 +102,10 @@ window.state = {
       // left or right
       const sign = newView.direction === "right" ? 1 : -1;
       options[viewOption].direction(date, sign);
-      console.log(date);
     } else if (newView.date === 0 && newView.viewOption !== 0) {
       // only viewOption contains a value  that's not 0
       // change of view (like day, month, etc)
       options[viewOption].viewChange(date);
-      console.log(date);
     }
     this.currentView = {
       viewOption,

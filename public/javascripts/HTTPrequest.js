@@ -16,8 +16,10 @@ async function displayCalendarGrid(viewOption, date) {
     document.write("HTTP error: " + response.status);
   }
   const html = await response.text();
-  //  console.log(response);
-  document.querySelector("#app-calendar").innerHTML = html;
+  document.querySelector("#calendar-container").innerHTML = html;
+  const weekdays = document.querySelector("#weekdays");
+  if (viewOption === "Week") weekdays.style.display = "inline-flex";
+  else weekdays.style.display = "none";
 }
 async function pickUpWhereYouLeftOff() {
   let response = await fetch(`${domainName}/getview`);
@@ -30,5 +32,4 @@ async function pickUpWhereYouLeftOff() {
 }
 async function newPage() {
   let response = await fetch(`${domainName}/newView`);
-
 }

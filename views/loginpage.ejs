@@ -1,10 +1,122 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
+<!DOCTYPE html>
+<html lang="en" style="font-family: sans-serif">
+  <title>Calendar App</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-signin-scope" content="profile email" />
+    <meta
+      name="google-signin-client_id"
+      content="900965066281-tcj9qciujqodr2bs6sl4hc85mhmips1b.apps.googleusercontent.com"
+    />
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+  </head>
+  <style>
+    * {
+      font-family: auto;
+    }
+    .top-bar {
+      text-align: center;
+      font-size: 40px;
+      width: fit-content;
+      padding: 0em 0.7em;
+      margin: auto;
+      font-family: sans-serif;
+}
+    .container {
+      width: 300px;
+      height: 300px;
+
+      margin: auto;
+      margin-top: 100px;
+      border-radius: 31px;
+      background: #ffffff;
+      box-shadow: 50px 50px 100px #878787, -50px -50px 100px #ffffff;
+    }
+    .welcome {
+      padding: 10px 30px;
+      font-family: system-ui;
+      font-size: 18px;
+      text-align: center;
+    }
+  </style>
+  <body>
+    <div class="top-bar">5D Planner</div>
+    <div style="width: 100%; height: min-content">
+      <div class="container">
+        <p class="welcome">
+          Benevenuto nel planner ufficiale della 5D, per favore autenticati con
+          il tuo account istituzionale	
+&#129402.
+        </p>
+        <div
+          style="display: block; margin: 80px 90px"
+          id="signin"
+          class="g-signin2"
+          data-onsuccess="onSignIn"
+        ></div>
+        <div style="width:120px; height: 36px;" onclick="signOut()"></div>
+      </div>
+      <p
+        style="
+          position: absolute;
+          bottom: 0px;
+          left: 0;
+          text-align: center;
+          margin: 30px 0px;
+          width: 100%;
+        "
+      >
+        <i class="far fa-copyright"></i><i class="far fa-copyright"></i> 2021
+        Sebastiano Tocci
+      </p>
+    </div>
+  </body>
+  <script
+    src="https://apis.google.com/js/platform.js?onload=init"
+    async
+    defer
+  ></script>
+  <script
+    src="https://kit.fontawesome.com/6dcebd7e16.js"
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    const domainName = "http://oifioiillinkdiarte1111.it";
+
+    function init() {
+      gapi.load("auth2", function () {
+        gapi.auth2.init({
+          client_id:
+            "900965066281-tcj9qciujqodr2bs6sl4hc85mhmips1b.apps.googleusercontent.com",
+        });
+      });
+    }
+    function onSignIn(googleUser) {
+      const id_token = "idtoken=" + googleUser.getAuthResponse().id_token;
+
+      fetch(`${domainName}/tokensignin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: id_token,
+      }).then(async (response) => {
+        if (response.status === 200) {
+          console.log("now asking for main page");
+          location.reload();
+        } else {
+          document
+            .querySelector(" .welcome").innerHTML = await response.text();
+        }
+      });
+    }
+
+    function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+  </script>
 </html>

@@ -1,0 +1,36 @@
+<div class="calendarGrid" style="${style}">
+<% cellContent.forEach((elm)=> { %>
+ 
+      signUpForDate({subject: "${cellContent[x].title}", date: "${cellContent[x].date}"};
+
+    
+      <div
+        class="gridCell ${isWeekend[x]} ${
+      cellContent[x].users ? " availableDate" : ""
+    }"
+        onclick = "${onClickCode}">`
+
+    
+      <div class="cellContent">
+        ${
+          viewOption !== "Year"
+            ? cellContent[x].title.trim().slice(0, 3) +
+              '<span class="hideCont">' +
+              cellContent[x].title.trim().slice(3) +
+              "</span>"
+            : cellContent[x].title
+        }
+      </div>
+  
+
+    if (cellContent[x].users ) {
+      cellContent[x].users.forEach((user) =>
+        <div class="priority_${user[1]}">${user[0]}</div>
+      );
+    }
+
+    gridContent.push(`</div>`);
+    <% }); %>
+  }
+ </div>
+  

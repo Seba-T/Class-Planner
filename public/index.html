@@ -4,52 +4,137 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="google-signin-scope" content="profile email" />
-    <meta
-      name="google-signin-client_id"
-      content="900965066281-tcj9qciujqodr2bs6sl4hc85mhmips1b.apps.googleusercontent.com"
-    />
-    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="./stylesheets/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
   </head>
   <body>
+    <div
+      class="modal fade"
+      id="signUpForDate"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              Prenotati per l'interrogazione!
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                <li class="page-item">
+                  <div class="page-link" onclick="signUpForDateObj.priority(1)">
+                    Priorità 1
+                  </div>
+                </li>
+                <li class="page-item">
+                  <div class="page-link" onclick="signUpForDateObj.priority(2)">
+                    Priorità 2
+                  </div>
+                </li>
+                <li class="page-item">
+                  <div class="page-link" onclick="signUpForDateObj.priority(3)">
+                    Priorità 3
+                  </div>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="top-bar">5D Planner</div>
-    <div 
-      id="signin"
-      class="g-signin2"
-      data-onsuccess="onSignIn"
-    ></div>
-    <div class="container">
+    <div class="container myContainer">
       <div
-        class="dropdown"
+        class="topbarelm"
         style="margin-left: calc(100% / 12); margin-right: calc(100% / 12 * 3)"
       >
         <p id="date"></p>
       </div>
       <div
-        class="dropdown"
+        class="dropdown topbarelm"
         style="margin-left: calc(100% / 12 * 3); margin-right: calc(100% / 12)"
       >
-        <button class="currentViewOption"></button>
-        <div class="dropdown-content">
+        <button
+          style="outline: none"
+          type="button"
+          class="currentViewOption"
+          class="btn btn-primary dropdown-toggle"
+          data-toggle="dropdown"
+        ></button>
+        <div
+          class="dropdown-menu"
+          style="width: 100%; border: none; background: transparent; left: 15px"
+        >
           <div id="0" class="dropdownElm">Day</div>
           <div id="1" class="dropdownElm">Week</div>
           <div id="2" class="dropdownElm">Month</div>
           <div id="3" class="dropdownElm">Year</div>
         </div>
       </div>
-      <div class="arrow left col-1">&#8592;</div>
-      <div id="app-calendar" class="col-10"></div>
-      <div class="arrow right col-1">&#8594;</div>
+      <button class="arrow left col-1" style="outline: none">&#8592;</button>
+      <div id="app-calendar" class="col-10 container-fluid">
+        <div
+          id="weekdays"
+          style="display: inline-flex; justify-content: space-around"
+        >
+          <div class="weekDayContainer">Mon</div>
+          <div class="weekDayContainer">Tue</div>
+          <div class="weekDayContainer">Wed</div>
+          <div class="weekDayContainer">Thu</div>
+          <div class="weekDayContainer">Fri</div>
+          <div class="weekDayContainer">Sat</div>
+        </div>
+        <div id="calendar-container" style="height: 100%"></div>
+      </div>
+      <button class="arrow right col-1" style="outline: none">&#8594;</button>
     </div>
+    <p
+      style="
+        margin: 30px 0px;
+        width: 100%;
+        text-align: center;
+        position: absolute;
+        bottom: 0px;
+      "
+    >
+      <i class="far fa-copyright"></i><i class="far fa-copyright"></i> 2021
+      Sebastiano Tocci
+    </p>
   </body>
   <script
-    src="https://apis.google.com/js/platform.js?onload=init"
-    async
-    defer
+    src="https://kit.fontawesome.com/6dcebd7e16.js"
+    crossorigin="anonymous"
   ></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-  <script src="./javascripts/googleLogingReq.js"></script>
   <script src="./javascripts/state.js"></script>
 
   <script src="./javascripts/script.js"></script>

@@ -13,6 +13,7 @@ model User {
   cookie String           @unique
   name    String         
   surname String        
+  role    String          @default("User")
   lastViewOption String @default("Month")
   lastDate DateTime          @default(now())
   dates   DatesOnUsers[]

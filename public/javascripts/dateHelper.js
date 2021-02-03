@@ -51,9 +51,16 @@ function formatDisplayedDate(viewOption, date) {
         month: "long",
       }).format(copy);
     case "Year":
-      return new Intl.DateTimeFormat("it-IT", {
-        year: "numeric",
-      }).format(copy);
+      return (
+        new Intl.DateTimeFormat("it-IT", {
+          month: "long",
+        }).format(copy) +
+        " - " +
+        new Intl.DateTimeFormat("it-IT", {
+          month: "long",
+          year: "numeric",
+        }).format(copy.setMonth(copy.getMonth() + 3))
+      );
   }
 }
 

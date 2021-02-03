@@ -30,13 +30,22 @@ body {
     justify-content: space-around;
   }
 }
+@media only screen and (max-width: 770px) {
+  .hideCont {
+    display: none;
+  }
+}
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
   #app-calendar {
     max-height: 400px;
   }
 }
-
+@media only screen and (min-width: 770px) {
+  .hideCont {
+    display: inline-block;
+  }
+}
 /* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) {
   /* .dropdown {
@@ -53,6 +62,16 @@ body {
 @media only screen and (min-width: 992px) {
   #app-calendar {
     max-height: 600px;
+  }
+}
+@media only screen and (min-width: 1214px) {
+  .myContainter {
+    width: 100%;
+  }
+}
+@media only screen and (max-height: 800px) {
+  #app-calendar {
+    max-height: 500px;
   }
 }
 .col-1 {
@@ -91,7 +110,8 @@ body {
 .col-12 {
   width: 100%;
 }
-.container {
+.myContainer {
+  left: 0;
   position: static;
   width: 100%;
   margin: 0;
@@ -102,10 +122,16 @@ body {
 p {
   margin-block: 0;
 }
+#app-calendar {
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+  padding: 0px;
+  align-self: stretch;
+}
 .calendarGrid {
   display: grid;
-  align-self: stretch;
-  height: 600px;
+  height: 100%;
 }
 
 #nest1,
@@ -119,11 +145,11 @@ p {
   text-align: center;
   margin: auto;
 }
-.priority_0 {
+.priority_1 {
   border-radius: 51px;
-  padding: 3px 10px;
+  padding: 0px 10px;
   margin: auto;
-  margin-top: 5px;
+  margin-top: 4px;
   display: block;
   width: fit-content;
   text-transform: capitalize;
@@ -131,9 +157,9 @@ p {
 }
 .priority_2 {
   border-radius: 51px;
-  padding: 3px 10px;
+  padding: 0px 10px;
   margin: auto;
-  margin-top: 5px;
+  margin-top: 4px;
   display: block;
   width: fit-content;
   text-transform: capitalize;
@@ -141,16 +167,16 @@ p {
 }
 .priority_3 {
   border-radius: 51px;
-  padding: 3px 10px;
+  padding: 0px 10px;
   margin: auto;
-  margin-top: 5px;
+  margin-top: 4px;
   display: block;
   width: fit-content;
   text-transform: capitalize;
   background-color: #b1d2ac;
 }
 .availableDate {
-  background: green !important;
+  background: #1cff007a !important;
   transition: background-color 200ms, color 200ms;
 }
 .availableDate:hover {
@@ -169,6 +195,14 @@ p {
   cursor: pointer;
   transition: background-color 200ms, color 200ms;
 }
+.gridCellYear {
+  border-radius: 12px;
+  width: auto;
+  padding: 7px 7px 7px 0px;
+  align-self: stretch;
+  text-align: center;
+  cursor: pointer;
+}
 .gridCell:hover {
   background-color: rgb(255, 153, 221);
   color: white;
@@ -176,21 +210,36 @@ p {
 .weekend {
   color: seagreen;
 }
-.hideCont {
-  display: none;
+.weekDayContainer {
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: inset -5px -4px 0px 0px #cccccc, -5px -5px 50px #ffffff;
+  width: 100%;
+  padding: 4px;
+  align-self: stretch;
+  text-align: center;
+  cursor: pointer;
 }
-
 .cellContent {
   font-size: 15px;
   margin: 0;
+  height: 100%;
 }
 
 .arrow {
+  padding: 0;
+  background-color: rgb(255, 255, 255);
+  border: none;
+  cursor: pointer;
   font-size: 60px;
   align-self: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: transform 0.3s linear;
+}
+.arrow :hover {
+  transform: scale(2);
 }
 .top-bar {
   text-align: center;
@@ -198,13 +247,15 @@ p {
   font-family: auto;
 }
 .currentViewOption {
+  width: 100%;
+  height: 100%;
   text-align: center;
   margin: auto;
   font-size: 15px;
   background: #ffffff;
   border: none;
 }
-.dropdown {
+.topbarelm {
   display: flex;
   border-radius: 19px;
   background: #ffffff;
@@ -214,25 +265,26 @@ p {
   margin-bottom: 4px;
   width: calc(100% / 12 * 2);
 }
-.dropdown-content {
+/* .dropdown-content {
   display: none;
   position: absolute;
   min-width: 160px;
-}
+} */
 .dropdownElm {
   margin: 4px;
+  text-align: center;
   border-radius: 50px;
   background: #ffffff;
   box-shadow: inset -4px -4px 0px 0px #d9d9d9, 20px -20px 60px #ffffff;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   cursor: pointer;
   transition: background-color 200ms, color 200ms;
 }
-.dropdown:hover .dropdown-content {
+/* .dropdown:hover .dropdown-content {
   display: block;
 }
 
 .dropdownElm:hover {
   background-color: #ddd;
-}
+} */

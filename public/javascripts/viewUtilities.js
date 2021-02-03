@@ -17,7 +17,6 @@ function clearPage(value) {
   );
 }
 
-
 // clearPage = animationHandler(clearPage, false);
 
 const leftArrow = document.querySelector(".left");
@@ -39,27 +38,6 @@ document.querySelectorAll(".dropdownElm").forEach((viewOption) => {
     });
   });
 });
-
-const smallDevice = window.matchMedia("(max-width: 600px)");
-
-smallDevice.addListener(handleSmallDevice);
-
-function handleSmallDevice(e) {
-  document.querySelectorAll(".cellTitle").forEach((elm) => {
-    if (e.matches) {
-      let hiddenCont = `${elm.innerHTML.slice(
-        0,
-        3
-      )}<span class="hideCont">${elm.innerHTML.slice(3)}</span>`;
-      elm.innerHTML = hiddenCont;
-    } else {
-      elm.classList.remove("hideCont");
-    }
-  });
-}
-
-// Run it initially
-handleSmallDevice(smallDevice);
 
 function functionFireHandler(fn, parms) {
   if (parms.callBack) {
