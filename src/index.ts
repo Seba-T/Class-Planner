@@ -10,14 +10,13 @@ const prisma = require("@prisma/client").PrismaClient;
 const prismaClient = new prisma();
 
 const calendarRenderer = require("./calendarRenderer.js");
+const privateInfo = require("../privateInfo.json");
 
 const csurf = require("csurf");
 const csrfProtection = csurf({ cookie: { httpOnly: true } });
 
 const { OAuth2Client } = require("google-auth-library");
-const client = new OAuth2Client(
-  "900965066281-tcj9qciujqodr2bs6sl4hc85mhmips1b.apps.googleusercontent.com"
-);
+const client = new OAuth2Client(privateInfo.googleAppId);
 const app = express();
 
 app.use(cookieParser());
@@ -35,7 +34,7 @@ app.post("/tokensignin", async (req, res) => {
   async function verify() {
     const ticket = await client.verifyIdToken({
       idToken: req.body,
-      audience: `900965066281-tcj9qciujqodr2bs6sl4hc85mhmips1b.apps.googleusercontent.com`,
+      audience: privateInfo.googleAppId,
     });
     const payload = ticket.getPayload();
     const id = payload["sub"];
@@ -119,18 +118,20 @@ app.use(
           rejectOnNotFound: true,
         });
       } catch (err) {
-        // console.log(err);
-        res.render("loginpage");
+        res.render("loginpage", {
+          googleAppId: privateInfo.googleAppId,
+          domainName: privateInfo.domainName,
+        });
       }
-      // console.log("was logged in");
       next();
     } else {
-      // console.log("not logged id");
-      res.render("loginpage");
+      res.render("loginpage", {
+        googleAppId: privateInfo.googleAppId,
+        domainName: privateInfo.domainName,
+      });
     }
   }),
   express.static(path.join(__dirname, "../public"))
 );
-
 
 app.listen(80);

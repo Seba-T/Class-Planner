@@ -7,7 +7,7 @@
     <meta name="google-signin-scope" content="profile email" />
     <meta
       name="google-signin-client_id"
-      content="900965066281-tcj9qciujqodr2bs6sl4hc85mhmips1b.apps.googleusercontent.com"
+      content="<%- googleAppId %>"
     />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
   </head>
@@ -82,13 +82,13 @@
     crossorigin="anonymous"
   ></script>
   <script>
-    const domainName = "http://oifioiillinkdiarte1111.it";
+    const domainName = "<%- domainName %>";
 
     function init() {
       gapi.load("auth2", function () {
         gapi.auth2.init({
           client_id:
-            "900965066281-tcj9qciujqodr2bs6sl4hc85mhmips1b.apps.googleusercontent.com",
+            "<%- googleAppId %>",
         });
       });
     }

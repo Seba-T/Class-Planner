@@ -62,7 +62,6 @@ async function getDatesPerMonth(date) {
     },
   });
   return query.map((elm) => elm.date);
- 
 }
 async function getVis(viewOption, startDay) {
   switch (viewOption) {
@@ -131,12 +130,10 @@ async function getVis(viewOption, startDay) {
       let newDate = new Date(startDay.getTime()); //firstWeekDayOfMonth
       dateHelper.getFirstDayOfWeek(newDate);
       const availableDays = await getDatesPerMonth(newDate);
-      const weekdays = ["Mon", "Thu", "Wed", "Tur", "Fri", "Sat", "Sun"];
+      const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
       for (let day = 0; day < cellNumb; day++) {
         cellContent[day] = {
-          title:
-            (day < 7 ? weekdays[day] + "<br>" : "") +
-            newDate.getDate(),
+          title: (day < 7 ? weekdays[day] + "<br>" : "") + newDate.getDate(),
           users: availableDays.find(
             (date) => date.toDateString() === newDate.toDateString()
           ),
@@ -171,7 +168,6 @@ async function getVis(viewOption, startDay) {
 
 async function displayCalendarGrid(viewOption, startDay) {
   const { grdClms, grdRows, cellContent } = await getVis(viewOption, startDay);
-  // console.log(schedule);
   const cellNumb = grdRows * grdClms;
   const isWeekend = getIsWeekend(viewOption, startDay, cellNumb);
 
@@ -183,7 +179,8 @@ async function displayCalendarGrid(viewOption, startDay) {
   const gridContent = [];
   for (let x = 0; x < cellNumb; x++) {
     const onClickCode =
-      viewOption !== "Day" //&& new Date(cellContent[x].date).getDay() !== 0
+      (viewOption !== "Day" && new Date(cellContent[x].date).getDay() !== 0) ||
+      viewOption === "Year"
         ? `window.state.updateView({
         viewOption: '${getNewViewOption(viewOption)}',
         date: '${cellContent[x].date}',
