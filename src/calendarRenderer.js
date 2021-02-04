@@ -131,18 +131,16 @@ async function getVis(viewOption, startDay) {
       let newDate = new Date(startDay.getTime()); //firstWeekDayOfMonth
       dateHelper.getFirstDayOfWeek(newDate);
       const availableDays = await getDatesPerMonth(newDate);
-      getWeekday = new Intl.DateTimeFormat("en-US", {
-        weekday: "short",
-      });
+      const weekdays = ["Mon", "Thu", "Wed", "Tur", "Fri", "Sat", "Sun"];
       for (let day = 0; day < cellNumb; day++) {
         cellContent[day] = {
           title:
-            (day < 7 ? getWeekday.format(newDate) + "<br>" : "") +
+            (day < 7 ? weekdays[day] + "<br>" : "") +
             newDate.getDate(),
           users: availableDays.find(
             (date) => date.toDateString() === newDate.toDateString()
           ),
-          date: new Date(newDate.getTime()).toISOString(),
+          date: newDate.toISOString(),
         };
         // console.log(cellContent[day].users);
         dateHelper.addDays(newDate, 1);

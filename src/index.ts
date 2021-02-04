@@ -107,30 +107,6 @@ app.get("/getview", async (req, res) => {
 });
 
 // app.post("/test", async (req, res) => {
-//   const startDate = new Date(req.body.date);
-//   startDate.setHours(1, 0, 0, 0);
-//   const endDate = new Date(startDate);
-//   endDate.setMonth(endDate.getMonth() + 1)
-//   const query = await prismaClient.date.findMany({
-//     where: {
-//       AND: [
-//         {
-//           date: {
-//             gte: startDate,
-//           },
-//         },
-//         {
-//           date: {
-//             lte: endDate,
-//           },
-//         },
-//       ],
-//     },
-//     select: {
-//       date: true
-//     }
-//   });
-//   const resp = query.map((elm) => elm.date);
 //   res.send(resp);
 // });
 
@@ -156,26 +132,5 @@ app.use(
   express.static(path.join(__dirname, "../public"))
 );
 
-// app.get(
-//   "/",
-//   function (req, res, next) {
-//     if (req.cookies.hasOwnProperty?.("googleId")) {
-//       console.log("was logged in");
-//       next();
-//     } else {
-//       console.log("not logged id");
-//       res.render("loginpage");
-//     }
-//   },
-//   express.static(path.join(__dirname, "../public"))
-// );
 
 app.listen(80);
-
-// app.get("/json", function (req, res) {
-
-//   prismaClient.user
-//     .findFirst({ where: { id: JSON.stringify(req.id) } })
-//     .then((data) => res.json(JSON.parse(data.surName)));
-// });
-// app.post("/json", function (req, res) {

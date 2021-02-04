@@ -7,14 +7,14 @@ function formatDisplayedDate(viewOption, date) {
   const copy = new Date(date.getTime());
   switch (viewOption) {
     case "Day":
-      return new Intl.DateTimeFormat("it-IT", {
+      return new Intl.DateTimeFormat("en-UK", {
         weekday: "short",
         year: "numeric",
         month: "short",
         day: "numeric",
       }).format(copy);
     case "Week":
-      dateFormat = new Intl.DateTimeFormat("it-IT", {
+      dateFormat = new Intl.DateTimeFormat("en-UK", {
         // year: "numeric",
         month: "short",
         day: "numeric",
@@ -46,17 +46,17 @@ function formatDisplayedDate(viewOption, date) {
         );
       }
     case "Month":
-      return new Intl.DateTimeFormat("it-IT", {
+      return new Intl.DateTimeFormat("en-UK", {
         year: "numeric",
         month: "long",
       }).format(copy);
     case "Year":
       return (
-        new Intl.DateTimeFormat("it-IT", {
+        new Intl.DateTimeFormat("en-UK", {
           month: "long",
         }).format(copy) +
         " - " +
-        new Intl.DateTimeFormat("it-IT", {
+        new Intl.DateTimeFormat("en-UK", {
           month: "long",
           year: "numeric",
         }).format(copy.setMonth(copy.getMonth() + 3))

@@ -1,5 +1,5 @@
 * {
-  box-sizing: border-box;
+  box-sizing:border-box;
 }
 body {
   -webkit-user-select: none;
@@ -14,11 +14,6 @@ body {
 @media only screen and (max-width: 600px) {
   #app-calendar {
     max-height: 300px;
-  }
-}
-@media only screen and (max-width: 600px) {
-  .dropdown {
-    min-height: 4.25rem;
   }
 }
 @media only screen and (max-width: 600px) {
@@ -69,7 +64,7 @@ body {
     width: 100%;
   }
 }
-@media only screen and (max-height: 800px) {
+@media only screen and (max-height: 700px) {
   #app-calendar {
     max-height: 500px;
   }
@@ -134,14 +129,9 @@ p {
   height: 100%;
 }
 
-#nest1,
-#nest2,
-#nest3,
-#nest4 {
-  position: relative;
-  display: grid;
-}
 #date {
+  width: fit-content;
+  display: inline;
   text-align: center;
   margin: auto;
 }
@@ -176,7 +166,7 @@ p {
   background-color: #b1d2ac;
 }
 .availableDate {
-  background: #1cff007a !important;
+  background: #73f66aba !important;
   transition: background-color 200ms, color 200ms;
 }
 .availableDate:hover {
@@ -256,14 +246,14 @@ p {
   border: none;
 }
 .topbarelm {
-  display: flex;
   border-radius: 19px;
   background: #ffffff;
   box-shadow: 16px 16px 33px #d9d9d9, -16px -16px 33px #ffffff;
-  padding: 16px 0px;
+  padding: 16px;
   border: 0px;
   margin-bottom: 4px;
-  width: calc(100% / 12 * 2);
+  max-width: -moz-fit-content;
+  max-width: fit-content;
 }
 /* .dropdown-content {
   display: none;

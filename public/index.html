@@ -68,33 +68,44 @@
         </div>
       </div>
     </div>
-    <div class="top-bar">5D Planner</div>
+    <div class="container top-bar">5D Planner</div>
     <div class="container myContainer">
       <div
-        class="topbarelm"
-        style="margin-left: calc(100% / 12); margin-right: calc(100% / 12 * 3)"
+        class="container"
+        style="
+          position: relative;
+          display: flex;
+          width: calc(100% / 12 * 10);
+          margin: 0% calc(100% / 12 *1);
+          padding: 0;
+          justify-content: space-between;
+        "
       >
-        <p id="date"></p>
-      </div>
-      <div
-        class="dropdown topbarelm"
-        style="margin-left: calc(100% / 12 * 3); margin-right: calc(100% / 12)"
-      >
-        <button
-          style="outline: none"
-          type="button"
-          class="currentViewOption"
-          class="btn btn-primary dropdown-toggle"
-          data-toggle="dropdown"
-        ></button>
-        <div
-          class="dropdown-menu"
-          style="width: 100%; border: none; background: transparent; left: 15px"
-        >
-          <div id="0" class="dropdownElm">Day</div>
-          <div id="1" class="dropdownElm">Week</div>
-          <div id="2" class="dropdownElm">Month</div>
-          <div id="3" class="dropdownElm">Year</div>
+        <div class="topbarelm">
+          <p id="date"></p>
+        </div>
+        <div class="dropdown topbarelm" style="min-width: max-content">
+          <button
+            style="outline: none"
+            type="button"
+            class="currentViewOption"
+            class="btn btn-primary dropdown-toggle"
+            data-toggle="dropdown"
+          ></button>
+          <div
+            class="dropdown-menu"
+            style="
+              width: 100%;
+              border: none;
+              background: transparent;
+              left: 15px;
+            "
+          >
+            <div id="0" class="dropdownElm">Day</div>
+            <div id="1" class="dropdownElm">Week</div>
+            <div id="2" class="dropdownElm">Month</div>
+            <div id="3" class="dropdownElm">Year</div>
+          </div>
         </div>
       </div>
       <button class="arrow left col-1" style="outline: none">&#8592;</button>
