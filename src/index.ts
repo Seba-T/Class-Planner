@@ -46,9 +46,7 @@ app.post("/tokensignin", async (req, res) => {
   }
   try {
     const user = await verify();
-    const newCookie = req.cookies.hasOwnProperty?.("googleId")
-      ? req.cookies.googleId
-      : crypton.randomBytes(25).toString("hex");
+    const newCookie = crypton.randomBytes(25).toString("hex");
     await prismaClient.user.upsert({
       where: { googleId: user.id },
       update: { cookie: newCookie },
@@ -59,13 +57,39 @@ app.post("/tokensignin", async (req, res) => {
         cookie: newCookie,
       },
     });
+    const datesOnUser = await prismaClient.user.findUnique({
+      where: { cookie: newCookie },
+      select: {
+        dates: {
+          select: {
+            Date: {
+              select: {
+                date: true,
+                Subject: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    const formattedDatesOnUser = datesOnUser.dates.map((elm) => {
+      return { date: elm.Date.date, subject: elm.Date.Subject.name };
+    });
     res
       .status(200)
-      .cookie("googleId", newCookie, {
+      .cookie("session", newCookie, {
         httpOnly: true,
         maxAge: 31 * 24 * 3600 * 1000,
       })
-      .send(user.name + " " + user.surname);
+      .json({
+        name: user.name + " " + user.surname,
+        googleId: user.id,
+        dates: formattedDatesOnUser,
+      });
   } catch (err) {
     // console.log(err);
     res.status(403).send(err);
@@ -78,43 +102,100 @@ app.post("/getcalendarview", async (req, res) => {
     req.body.viewOption,
     new Date(req.body.date)
   );
-  updateLastView = async function () {
-    await prismaClient.user.update({
-      where: { cookie: req.cookies.googleId },
-      data: {
-        lastDate: new Date(req.body.date),
-        lastViewOption: req.body.viewOption,
-      },
-    });
+
+  updateLastView = async function (cookie, lastDate, lastViewOption) {
+    try {
+      await prismaClient.user.update({
+        where: { cookie: cookie },
+        data: {
+          lastDate: lastDate,
+          lastViewOption: lastViewOption,
+        },
+      });
+    } catch (err) {
+      throw err;
+    }
   };
-  if (!alreadyCalled) {
+  const cookie = req.cookies.session;
+  const lastDate = new Date(req.body.date);
+  const lastViewOption = req.body.viewOption;
+  if (lastViewOption === "Day") {
+    updateLastView(cookie, lastDate, lastViewOption);
+  } else if (!alreadyCalled) {
     alreadyCalled = true;
     setTimeout(() => {
       alreadyCalled = false;
-      updateLastView();
+      updateLastView(cookie, lastDate, lastViewOption);
     }, 20 * 1000);
   }
   res.send(response);
 });
 
 app.get("/getview", async (req, res) => {
-  const user = await prismaClient.user.findFirst({
-    where: { cookie: req.cookies.googleId },
+  const user = await prismaClient.user.findUnique({
+    where: { cookie: req.cookies.session },
     select: { lastViewOption: true, lastDate: true },
   });
   res.send(user);
 });
 
-// app.post("/test", async (req, res) => {
-//   res.send(resp);
-// });
+app.post("/signupfordate", async (req, res) => {
+  const date = new Date(req.body.date);
+  date.setHours(1, 0, 0, 0);
+  const userId = (
+    await prismaClient.user.findUnique({
+      where: { cookie: req.cookies.session },
+      select: { id: true },
+    })
+  ).id;
+  const dateId = (
+    await prismaClient.date.findFirst({
+      where: { date: date, Subject: { name: req.body.subject } },
+      select: { id: true },
+    })
+  ).id;
+  try {
+    switch (req.body.action) {
+      case "CREATE":
+        await prismaClient.datesOnUsers.create({
+          data: {
+            priority: req.body.priority,
+            userId: userId,
+            dateId: dateId,
+          },
+        });
+        break;
+      case "DELETE":
+        const deleteId = (
+          await prismaClient.datesOnUsers.findFirst({
+            where: { userId: userId, dateId: dateId },
+            select: { id: true },
+          })
+        ).id;
+        console.log(deleteId);
+        await prismaClient.datesOnUsers.delete({
+          where: { id: deleteId },
+        });
+        break;
+      default:
+        return 0;
+    }
+  } catch (e) {
+    // console.log(e);
+    res.status(422).send(e);
+  }
+  res.status(200).send("operazione confermata!");
+});
 
 app.use(
   r1.all("*", async function (req, res, next) {
-    if (req.cookies.hasOwnProperty?.("googleId")) {
+    if (
+      Object.keys(req.cookies).length !== 0 &&
+      req.cookies.hasOwnProperty("session")
+    ) {
       try {
         await prismaClient.user.findFirst({
-          where: { cookie: req.cookies.googleId },
+          where: { cookie: req.cookies.session },
           rejectOnNotFound: true,
         });
       } catch (err) {

@@ -7,9 +7,13 @@
     <meta name="google-signin-scope" content="profile email" />
     <meta
       name="google-signin-client_id"
-      content="<%- googleAppId %>"
+      content="<%- googleAppId%>"
     />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+     <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
   </head>
   <style>
     * {
@@ -34,6 +38,7 @@
       box-shadow: 50px 50px 100px #878787, -50px -50px 100px #ffffff;
     }
     .welcome {
+      margin-bottom: 0px;
       padding: 10px 30px;
       font-family: system-ui;
       font-size: 18px;
@@ -41,21 +46,34 @@
     }
   </style>
   <body>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"></h5>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+   
     <div class="top-bar">5D Planner</div>
     <div style="width: 100%; height: min-content">
-      <div class="container">
+      <div class="container" style="display: flex; flex-direction: column; justify-content: space-evenly;">
         <p class="welcome">
           Benevenuto nel planner ufficiale della 5D, per favore autenticati con
           il tuo account istituzionale	
 &#129402.
         </p>
         <div
-          style="display: block; margin: 80px 90px"
+        style="display: block; align-self: center;"
           id="signin"
           class="g-signin2"
           data-onsuccess="onSignIn"
         ></div>
-        <div style="width:120px; height: 36px;" onclick="signOut()"></div>
+        <button type="button" class="btn btn-outline-secondary" onclick="signOut()" style="width: 120px; align-self: center;">Sign Out</button>
       </div>
       <p
         style="
@@ -72,6 +90,10 @@
       </p>
     </div>
   </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
   <script
     src="https://apis.google.com/js/platform.js?onload=init"
     async
@@ -103,11 +125,16 @@
         body: id_token,
       }).then(async (response) => {
         if (response.status === 200) {
-          console.log("now asking for main page");
+          const loggedUser = JSON.parse(await response.text());
+          for(let key in loggedUser){
+            localStorage.setItem(key, JSON.stringify(loggedUser[key]));
+          }
           location.reload();
         } else {
-          document
-            .querySelector(" .welcome").innerHTML = await response.text();
+          console.log(response.status);
+          $('#exampleModalLabel').innerHTML = response.text();
+          $('#exampleModal').modal({keyboard: false})
+          
         }
       });
     }

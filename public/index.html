@@ -34,36 +34,27 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-            <nav aria-label="Page navigation example">
+          <div id="modal-content" class="modal-body">
+            <nav >
               <ul class="pagination">
                 <li class="page-item">
-                  <div class="page-link" onclick="signUpForDateObj.priority(1)">
+                  <div data-dismiss="modal" class="page-link" onclick='signUpForDateObj.signUpAction("CREATE", 1)'>
                     Priorità 1
                   </div>
                 </li>
                 <li class="page-item">
-                  <div class="page-link" onclick="signUpForDateObj.priority(2)">
+                  <div data-dismiss="modal" class="page-link" onclick='signUpForDateObj.signUpAction("CREATE", 2)'>
                     Priorità 2
                   </div>
                 </li>
                 <li class="page-item">
-                  <div class="page-link" onclick="signUpForDateObj.priority(3)">
+                  <div data-dismiss="modal" class="page-link" onclick='signUpForDateObj.signUpAction("CREATE", 3)'>
                     Priorità 3
                   </div>
                 </li>
               </ul>
             </nav>
           </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
-            <button type="button" class="btn btn-primary">Save changes</button>
           </div>
         </div>
       </div>
@@ -73,10 +64,9 @@
       <div
         class="container"
         style="
-          position: relative;
           display: flex;
           width: calc(100% / 12 * 10);
-          margin: 0% calc(100% / 12 *1);
+          margin: 0% calc(100% / 12 * 1);
           padding: 0;
           justify-content: space-between;
         "
@@ -108,20 +98,26 @@
           </div>
         </div>
       </div>
+      <div
+        id="weekdays"
+        style="
+          display: flex;
+          justify-content: space-around;
+          width: calc(100% / 12 * 10);
+          margin: 0% calc(100% / 12 * 1);
+          padding: 0;
+          position: relative;
+        "
+      >
+        <div class="weekDayContainer">Mon</div>
+        <div class="weekDayContainer">Tue</div>
+        <div class="weekDayContainer">Wed</div>
+        <div class="weekDayContainer">Thu</div>
+        <div class="weekDayContainer">Fri</div>
+        <div class="weekDayContainer">Sat</div>
+      </div>
       <button class="arrow left col-1" style="outline: none">&#8592;</button>
       <div id="app-calendar" class="col-10 container-fluid">
-        <div
-          id="weekdays"
-          style="display: inline-flex; justify-content: space-around"
-        >
-          <div class="weekDayContainer">Mon</div>
-          <div class="weekDayContainer">Tue</div>
-          <div class="weekDayContainer">Wed</div>
-          <div class="weekDayContainer">Thu</div>
-          <div class="weekDayContainer">Fri</div>
-          <div class="weekDayContainer">Sat</div>
-        </div>
-        <div id="calendar-container" style="height: 100%"></div>
       </div>
       <button class="arrow right col-1" style="outline: none">&#8594;</button>
     </div>

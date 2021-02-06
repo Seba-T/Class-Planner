@@ -64,7 +64,7 @@ body {
     width: 100%;
   }
 }
-@media only screen and (max-height: 700px) {
+@media only screen and (max-height: 800px) and (min-width: 800px) {
   #app-calendar {
     max-height: 500px;
   }
@@ -142,6 +142,7 @@ p {
   margin-top: 4px;
   display: block;
   width: fit-content;
+  width: -moz-fit-content;
   text-transform: capitalize;
   background-color: #eaaf6c;
 }
@@ -152,6 +153,7 @@ p {
   margin-top: 4px;
   display: block;
   width: fit-content;
+  width: -moz-fit-content;
   text-transform: capitalize;
   background-color: #d1b3d5;
 }
@@ -162,11 +164,12 @@ p {
   margin-top: 4px;
   display: block;
   width: fit-content;
+  width: -moz-fit-content;
   text-transform: capitalize;
   background-color: #b1d2ac;
 }
 .availableDate {
-  background: #73f66aba !important;
+  background: #f2a3ec7d !important;
   transition: background-color 200ms, color 200ms;
 }
 .availableDate:hover {
@@ -186,6 +189,7 @@ p {
   transition: background-color 200ms, color 200ms;
 }
 .gridCellYear {
+  height: 100%;
   border-radius: 12px;
   width: auto;
   padding: 7px 7px 7px 0px;
@@ -211,9 +215,9 @@ p {
   cursor: pointer;
 }
 .cellContent {
+  height: inherit;
   font-size: 15px;
   margin: 0;
-  height: 100%;
 }
 
 .arrow {
