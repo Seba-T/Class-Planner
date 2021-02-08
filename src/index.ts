@@ -27,7 +27,31 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
 
 const r1 = express.Router();
-const r2 = express.Router();
+
+async function authenticateReq(req, res, next) {
+  if (
+    Object.keys(req.cookies).length !== 0 &&
+    req.cookies.hasOwnProperty("session")
+  ) {
+    try {
+      await prismaClient.user.findUnique({
+        where: { cookie: req.cookies.session },
+        rejectOnNotFound: true,
+      });
+    } catch (err) {
+      res.status(403).render("loginpage", {
+        googleAppId: privateInfo.googleAppId,
+        domainName: privateInfo.domainName,
+      });
+    }
+    next();
+  } else {
+    res.status(403).render("loginpage", {
+      googleAppId: privateInfo.googleAppId,
+      domainName: privateInfo.domainName,
+    });
+  }
+}
 
 app.post("/tokensignin", async (req, res) => {
   // console.log("I have been called");
@@ -60,6 +84,7 @@ app.post("/tokensignin", async (req, res) => {
     const datesOnUser = await prismaClient.user.findUnique({
       where: { cookie: newCookie },
       select: {
+        role: true,
         dates: {
           select: {
             Date: {
@@ -79,6 +104,7 @@ app.post("/tokensignin", async (req, res) => {
     const formattedDatesOnUser = datesOnUser.dates.map((elm) => {
       return { date: elm.Date.date, subject: elm.Date.Subject.name };
     });
+    const userRole = datesOnUser.role;
     res
       .status(200)
       .cookie("session", newCookie, {
@@ -89,6 +115,7 @@ app.post("/tokensignin", async (req, res) => {
         name: user.name + " " + user.surname,
         googleId: user.id,
         dates: formattedDatesOnUser,
+        role: userRole,
       });
   } catch (err) {
     // console.log(err);
@@ -111,19 +138,23 @@ app.post("/getcalendarview", async (req, res) => {
           lastDate: lastDate,
           lastViewOption: lastViewOption,
         },
+        rejectOnNotFound: true,
       });
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   };
   const cookie = req.cookies.session;
   const lastDate = new Date(req.body.date);
   const lastViewOption = req.body.viewOption;
+  var timeOut;
   if (lastViewOption === "Day") {
     updateLastView(cookie, lastDate, lastViewOption);
+    clearTimeout(timeOut);
+    alreadyCalled = false;
   } else if (!alreadyCalled) {
     alreadyCalled = true;
-    setTimeout(() => {
+    timeOut = setTimeout(() => {
       alreadyCalled = false;
       updateLastView(cookie, lastDate, lastViewOption);
     }, 20 * 1000);
@@ -132,29 +163,40 @@ app.post("/getcalendarview", async (req, res) => {
 });
 
 app.get("/getview", async (req, res) => {
-  const user = await prismaClient.user.findUnique({
-    where: { cookie: req.cookies.session },
-    select: { lastViewOption: true, lastDate: true },
-  });
-  res.send(user);
+  //gets last view
+  try {
+    const user = await prismaClient.user.findUnique({
+      where: { cookie: req.cookies.session },
+      select: { lastViewOption: true, lastDate: true },
+      rejectOnNotFound: true,
+    });
+    res.send(user);
+  } catch (err) {
+    res.status(403).render("loginpage", {
+      googleAppId: privateInfo.googleAppId,
+      domainName: privateInfo.domainName,
+    });
+  }
 });
 
 app.post("/signupfordate", async (req, res) => {
   const date = new Date(req.body.date);
   date.setHours(1, 0, 0, 0);
-  const userId = (
-    await prismaClient.user.findUnique({
-      where: { cookie: req.cookies.session },
-      select: { id: true },
-    })
-  ).id;
-  const dateId = (
-    await prismaClient.date.findFirst({
-      where: { date: date, Subject: { name: req.body.subject } },
-      select: { id: true },
-    })
-  ).id;
   try {
+    const userId = (
+      await prismaClient.user.findUnique({
+        where: { cookie: req.cookies.session },
+        select: { id: true },
+        rejectOnNotFound: true,
+      })
+    ).id;
+    const dateId = (
+      await prismaClient.date.findFirst({
+        where: { date: date, Subject: { name: req.body.subject } },
+        select: { id: true },
+        rejectOnNotFound: true,
+      })
+    ).id;
     switch (req.body.action) {
       case "CREATE":
         await prismaClient.datesOnUsers.create({
@@ -172,7 +214,6 @@ app.post("/signupfordate", async (req, res) => {
             select: { id: true },
           })
         ).id;
-        console.log(deleteId);
         await prismaClient.datesOnUsers.delete({
           where: { id: deleteId },
         });
@@ -181,38 +222,62 @@ app.post("/signupfordate", async (req, res) => {
         return 0;
     }
   } catch (e) {
-    // console.log(e);
     res.status(422).send(e);
   }
   res.status(200).send("operazione confermata!");
 });
+app.get("/getinsertdateview", async (req, res) => {
+  try {
+    const lastDate = (
+      await prismaClient.user.findUnique({
+        where: { cookie: req.cookies.session },
+        select: { lastDate: true },
+        rejectOnNotFound: true,
+      })
+    ).lastDate;
+    res.render("insertdateview", {
+      date: lastDate,
+    });
+  } catch (err) {
+    res.render("loginpage", {
+      googleAppId: privateInfo.googleAppId,
+      domainName: privateInfo.domainName,
+    });
+  }
+});
+app.post("/createdate", authenticateReq, async (req, res) => {
+  try {
+    const role = (
+      await prismaClient.user.findUnique({
+        where: { cookie: req.cookies.session },
+        select: { role: true },
+        rejectOnNotFound: true,
+      })
+    ).role;
+    if (role === "admin") {
+      const date = new Date(req.body.date);
+      date.setHours(1, 0, 0, 0);
+      await prismaClient.date.create({
+        data: {
+          date: date,
+          subject: {
+            connect: { name: req.body.subject },
+          },
+        },
+      });
+    } else {
+      res.status(422).send("You are not allowed to make this request!");
+    }
+  } catch (err) {
+    res.render("loginpage", {
+      googleAppId: privateInfo.googleAppId,
+      domainName: privateInfo.domainName,
+    });
+  }
+});
 
 app.use(
-  r1.all("*", async function (req, res, next) {
-    if (
-      Object.keys(req.cookies).length !== 0 &&
-      req.cookies.hasOwnProperty("session")
-    ) {
-      try {
-        await prismaClient.user.findFirst({
-          where: { cookie: req.cookies.session },
-          rejectOnNotFound: true,
-        });
-      } catch (err) {
-        res.render("loginpage", {
-          googleAppId: privateInfo.googleAppId,
-          domainName: privateInfo.domainName,
-        });
-      }
-      next();
-    } else {
-      res.render("loginpage", {
-        googleAppId: privateInfo.googleAppId,
-        domainName: privateInfo.domainName,
-      });
-    }
-  }),
+  r1.all("*", authenticateReq),
   express.static(path.join(__dirname, "../public"))
 );
-
 app.listen(80);

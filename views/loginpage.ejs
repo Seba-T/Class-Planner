@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" style="font-family: sans-serif">
-  <title>Calendar App</title>
+  <title>5D Planner</title>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-signin-scope" content="profile email" />
-    <meta
-      name="google-signin-client_id"
-      content="<%- googleAppId%>"
-    />
+    <meta name="google-signin-client_id" content="<%- googleAppId%>" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
-     <link
+    <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
@@ -26,7 +23,7 @@
       padding: 0em 0.7em;
       margin: auto;
       font-family: sans-serif;
-}
+    }
     .container {
       width: 300px;
       height: 300px;
@@ -46,34 +43,56 @@
     }
   </style>
   <body>
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"></h5>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel"></h5>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-info" data-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-   
+
     <div class="top-bar">5D Planner</div>
     <div style="width: 100%; height: min-content">
-      <div class="container" style="display: flex; flex-direction: column; justify-content: space-evenly;">
+      <div
+        class="container"
+        style="
+          display: flex;
+          flex-direction: column;
+          justify-content: space-evenly;
+        "
+      >
         <p class="welcome">
           Benevenuto nel planner ufficiale della 5D, per favore autenticati con
-          il tuo account istituzionale	
-&#129402.
+          il tuo account istituzionale
         </p>
         <div
-        style="display: block; align-self: center;"
+          style="display: block; align-self: center"
           id="signin"
           class="g-signin2"
           data-onsuccess="onSignIn"
         ></div>
-        <button type="button" class="btn btn-outline-secondary" onclick="signOut()" style="width: 120px; align-self: center;">Sign Out</button>
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          onclick="signOut()"
+          style="width: 120px; align-self: center"
+        >
+          Sign Out
+        </button>
       </div>
       <p
         style="
@@ -109,8 +128,7 @@
     function init() {
       gapi.load("auth2", function () {
         gapi.auth2.init({
-          client_id:
-            "<%- googleAppId %>",
+          client_id: "<%- googleAppId %>",
         });
       });
     }
@@ -126,24 +144,23 @@
       }).then(async (response) => {
         if (response.status === 200) {
           const loggedUser = JSON.parse(await response.text());
-          for(let key in loggedUser){
+          for (let key in loggedUser) {
             localStorage.setItem(key, JSON.stringify(loggedUser[key]));
           }
           location.reload();
         } else {
           console.log(response.status);
-          $('#exampleModalLabel').innerHTML = response.text();
-          $('#exampleModal').modal({keyboard: false})
-          
+          $("#exampleModalLabel").innerHTML = response.text();
+          $("#exampleModal").modal({ keyboard: false });
         }
       });
     }
 
     function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-      console.log('User signed out.');
-    });
-  }
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut().then(function () {
+        console.log("User signed out.");
+      });
+    }
   </script>
 </html>

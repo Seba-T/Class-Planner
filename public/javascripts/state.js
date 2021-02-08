@@ -2,7 +2,7 @@ window.state = {
   currentUser: {
     name: null,
     googleId: null,
-    dates: null
+    dates: null,
   },
   _previousStates: [],
   _currentView: {

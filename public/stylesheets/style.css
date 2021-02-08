@@ -1,5 +1,5 @@
 * {
-  box-sizing:border-box;
+  box-sizing: border-box;
 }
 body {
   -webkit-user-select: none;
@@ -15,21 +15,23 @@ body {
   #app-calendar {
     max-height: 300px;
   }
-}
-@media only screen and (max-width: 600px) {
   .cellTitle {
-    font-size: 8px;
-    width: inherit;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+    font-size: 8px !important;
+    width: inherit !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: space-around !important;
   }
 }
 @media only screen and (max-width: 770px) {
+  .topbarelm {
+    padding: 8px !important;
+  }
   .hideCont {
     display: none;
   }
 }
+
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
   #app-calendar {
@@ -43,22 +45,15 @@ body {
 }
 /* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) {
-  /* .dropdown {
-    font-size: larger;
-  }
-  .currentViewOption {
-    font-size: larger;
-  } */
   .gridCell {
     padding-bottom: 5%;
     padding-top: 2%;
   }
-}
-@media only screen and (min-width: 992px) {
   #app-calendar {
     max-height: 600px;
   }
 }
+
 @media only screen and (min-width: 1214px) {
   .myContainter {
     width: 100%;
@@ -181,6 +176,8 @@ p {
   border-radius: 12px;
   background: #ffffff;
   box-shadow: inset -5px -4px 0px 0px #cccccc, -5px -5px 50px #ffffff;
+  /* min-height: max-content;
+  min-height: -moz-max-content; */
   width: auto;
   padding-top: 4px;
   align-self: stretch;

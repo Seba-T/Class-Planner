@@ -14,6 +14,7 @@ async function displayCalendarGrid(viewOption, date) {
   });
   if (response.status !== 200) {
     document.write("HTTP error: " + response.status);
+    if (response.status === 403) location.reload();
   }
   const html = await response.text();
   document.querySelector("#app-calendar").innerHTML = html;
@@ -32,16 +33,17 @@ async function pickUpWhereYouLeftOff() {
 }
 async function submitSignUpAction(action, date, subject, priority) {
   const currentLocalStorage = JSON.parse(localStorage.getItem("dates"));
-  if(action === "CREATE") { 
-    
-    currentLocalStorage.push({date, subject});
+  if (action === "CREATE") {
+    currentLocalStorage.push({ date, subject });
     localStorage.setItem("dates", JSON.stringify(currentLocalStorage));
   } else {
-    const newLocalStorage = currentLocalStorage.filter((elm) => elm.subject !== subject ||
-      elm.date.slice(0, 10) !== date.slice(0, 10));
-      localStorage.setItem("dates", JSON.stringify(newLocalStorage));
+    const newLocalStorage = currentLocalStorage.filter(
+      (elm) =>
+        elm.subject !== subject || elm.date.slice(0, 10) !== date.slice(0, 10)
+    );
+    localStorage.setItem("dates", JSON.stringify(newLocalStorage));
   }
-  const submitData = JSON.stringify({ date, subject, priority, action});
+  const submitData = JSON.stringify({ date, subject, priority, action });
   let response = await fetch(`${domainName}/signupfordate`, {
     method: "POST",
     headers: {
@@ -49,8 +51,11 @@ async function submitSignUpAction(action, date, subject, priority) {
     },
     body: submitData,
   });
-  if(response.status === 200){
-    alert("modifica registrata con successo"); 
+  if (response.status === 200) {
+    $("#confirm-alert").modal("hide");
+    location.reload();
+  } else if (response.status === 403) {
+    alert("request failed");
     location.reload();
   }
 }

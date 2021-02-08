@@ -1,6 +1,6 @@
 function clearPage(value) {
   let elements = new Array();
-  const elementsSelectors = [".app-calendar", "#date", " .currentViewOption"];
+  const elementsSelectors = [" .app-calendar", "#date", " .currentViewOption"];
   elementsSelectors.forEach((elm) =>
     elements.push(document.querySelector(elm))
   );
@@ -10,7 +10,6 @@ function clearPage(value) {
       [
         { opacity: 0, easing: "ease-in" },
         { opacity: 1, easing: "ease-in" },
-        // { opacity: 0 },
       ],
       value * 2
     )
