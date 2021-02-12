@@ -25,6 +25,16 @@
   },
   "devDependencies": {
     "prettier": "2.2.1",
-    "prisma": "^2.16.0"
+    "prisma": "^2.16.1"
+  },
+  "compilerOptions": {
+    "target": "es6",
+    "lib": [
+      "es2019",
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
   }
 }

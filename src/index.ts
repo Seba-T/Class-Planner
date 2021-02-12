@@ -11,6 +11,8 @@ const prismaClient = new prisma();
 
 const calendarRenderer = require("./calendarRenderer.js");
 const privateInfo = require("../privateInfo.json");
+const schedule = require("./schedule.json");
+const dateHelper = require("./dateHelper.js");
 
 const csurf = require("csurf");
 const csrfProtection = csurf({ cookie: { httpOnly: true } });
@@ -54,7 +56,6 @@ async function authenticateReq(req, res, next) {
 }
 
 app.post("/tokensignin", async (req, res) => {
-  // console.log("I have been called");
   async function verify() {
     const ticket = await client.verifyIdToken({
       idToken: req.body,
@@ -118,7 +119,7 @@ app.post("/tokensignin", async (req, res) => {
         role: userRole,
       });
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     res.status(403).send(err);
   }
 });
@@ -245,7 +246,26 @@ app.get("/getinsertdateview", async (req, res) => {
     });
   }
 });
-app.post("/createdate", authenticateReq, async (req, res) => {
+app.post("/availabledates", async (req, res) => {
+  const avlweekdays = [];
+  schedule.forEach((a, index) => {
+    const elmPos = a.find(
+      (b) => b.toLowerCase() === req.body.subject.toLowerCase()
+    );
+    if (elmPos !== undefined) avlweekdays.push(index);
+  });
+  const now = new Date();
+  now.setDate(now.getDate() + 1 - now.getDay());
+  const week = avlweekdays.map((a) => now.getTime() + 24 * 3600 * 1000 * a);
+  const avldates = Array.from(new Array(10), (_, index) =>
+    week.map((a) => new Date(a + 7 * 24 * 3600 * 1000 * index).toDateString())
+  )
+    .reduce((acc, val) => acc.concat(val), [])
+    .slice(0, 10);
+  res.json(avldates);
+});
+
+app.post("/createdate", async (req, res) => {
   try {
     const role = (
       await prismaClient.user.findUnique({
@@ -255,16 +275,22 @@ app.post("/createdate", authenticateReq, async (req, res) => {
       })
     ).role;
     if (role === "admin") {
-      const date = new Date(req.body.date);
-      date.setHours(1, 0, 0, 0);
-      await prismaClient.date.create({
-        data: {
-          date: date,
-          subject: {
-            connect: { name: req.body.subject },
-          },
-        },
-      });
+      const dates = req.body.dates.map((a) => new Date(a));
+      dates.forEach((date) => date.setHours(1, 0, 0, 0));
+      const newDates = await Promise.all(
+        dates.map(
+          async (date) =>
+            await prismaClient.date.create({
+              data: {
+                date: date,
+                Subject: {
+                  connect: { name: req.body.subject },
+                },
+              },
+            })
+        )
+      );
+      res.status(200).send(newDates);
     } else {
       res.status(422).send("You are not allowed to make this request!");
     }
@@ -275,7 +301,10 @@ app.post("/createdate", authenticateReq, async (req, res) => {
     });
   }
 });
-
+// app.post("/test", (req, res) => {
+//   console.log(req.body);
+//   res.send("funziona");
+// });
 app.use(
   r1.all("*", authenticateReq),
   express.static(path.join(__dirname, "../public"))

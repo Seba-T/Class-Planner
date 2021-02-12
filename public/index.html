@@ -7,8 +7,10 @@
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="./stylesheets/style.css" />
     <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+      crossorigin="anonymous"
     />
   </head>
   <body>
@@ -160,7 +162,11 @@
         <div class="weekDayContainer">Sat</div>
       </div>
       <button class="arrow left col-1" style="outline: none">&#8592;</button>
-      <div id="app-calendar" class="col-10 container-fluid"></div>
+      <div
+        id="app-calendar"
+        style="position: relative"
+        class="col-10 container-fluid"
+      ></div>
       <button class="arrow right col-1" style="outline: none">&#8594;</button>
     </div>
     <p

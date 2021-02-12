@@ -26,7 +26,7 @@ function signUpForDate(params) {
   window.state.currentUser.dates.forEach((date) => {
     if (
       date.subject === params.subject &&
-      date.date.slice(0, 10) === params.date.slice(0, 10)
+      date.date.slice(0, 11) === params.date.slice(0, 11)
     ) {
       console.log("we are in");
       document.querySelector(
@@ -36,7 +36,6 @@ function signUpForDate(params) {
   });
   signUpForDateObj.date = params.date;
   signUpForDateObj.subject = params.subject;
-  console.log(params);
 }
 
 const signUpForDateObj = {
