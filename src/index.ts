@@ -5,6 +5,8 @@ const crypton = require("crypto");
 const ejs = require("ejs");
 const path = require("path");
 const fs = require("fs");
+const Rsync = require("rsync");
+const rsync = new Rsync();
 
 const prisma = require("@prisma/client").PrismaClient;
 const prismaClient = new prisma();
@@ -13,6 +15,8 @@ const calendarRenderer = require("./calendarRenderer.js");
 const privateInfo = require("../privateInfo.json");
 const schedule = require("./schedule.json");
 const dateHelper = require("./dateHelper.js");
+const rsyncSource = "./prisma";
+const rsyncDest = "./backup";
 
 const csurf = require("csurf");
 const csrfProtection = csurf({ cookie: { httpOnly: true } });
@@ -53,6 +57,29 @@ async function authenticateReq(req, res, next) {
       domainName: privateInfo.domainName,
     });
   }
+}
+function runRsync() {
+  rsync.flags("avzP");
+  rsync.source(rsyncSource);
+  rsync.destination(rsyncDest);
+  return new Promise((resolve, reject) => {
+    try {
+      let logData = "";
+      rsync.execute(
+        (error, code, cmd) => {
+          resolve({ error, code, cmd, data: logData });
+        },
+        (data) => {
+          logData += data;
+        },
+        (err) => {
+          logData += err;
+        }
+      );
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
 app.post("/tokensignin", async (req, res) => {
@@ -149,17 +176,18 @@ app.post("/getcalendarview", async (req, res) => {
   const lastDate = new Date(req.body.date);
   const lastViewOption = req.body.viewOption;
   var timeOut;
-  if (lastViewOption === "Day") {
-    updateLastView(cookie, lastDate, lastViewOption);
-    clearTimeout(timeOut);
-    alreadyCalled = false;
-  } else if (!alreadyCalled) {
-    alreadyCalled = true;
-    timeOut = setTimeout(() => {
-      alreadyCalled = false;
-      updateLastView(cookie, lastDate, lastViewOption);
-    }, 20 * 1000);
-  }
+  updateLastView(cookie, lastDate, lastViewOption);
+  // if (lastViewOption === "Day") {
+  //   updateLastView(cookie, lastDate, lastViewOption);
+  //   clearTimeout(timeOut);
+  //   alreadyCalled = false;
+  // } else if (!alreadyCalled) {
+  //   alreadyCalled = true;
+  //   timeOut = setTimeout(() => {
+  //     alreadyCalled = false;
+  //     updateLastView(cookie, lastDate, lastViewOption);
+  //   }, 20 * 1000);
+  // }
   res.send(response);
 });
 
@@ -305,8 +333,22 @@ app.post("/createdate", async (req, res) => {
 //   console.log(req.body);
 //   res.send("funziona");
 // });
+setInterval(() => {
+  fs.copyFile("../prisma/dev.db", "../backup", (err) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+  });
+}, 24 * 3600 * 1000);
+
 app.use(
   r1.all("*", authenticateReq),
   express.static(path.join(__dirname, "../public"))
 );
+
+(async () => {
+  await runRsync();
+})();
+
 app.listen(80);

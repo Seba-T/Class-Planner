@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {             
+  id      Int            @id @default(autoincrement())
+  googleId String         @unique 
+  cookie String           @unique
+  name    String         
+  surname String        
+  role    String          @default("user")
+  lastViewOption String @default("Month")
+  lastDate DateTime          @default(now())
+  dates   DatesOnUsers[]
+}
+
+model Subject {
+  id      Int    @id @default(autoincrement())
+  name    String @unique
+  teacher String
+  dates   Date[]
+}
+
+model Date {
+  id        Int @id @default(autoincrement())
+  date      DateTime
+  users     DatesOnUsers[]
+  Subject   Subject        @relation(fields: [subjectId], references: [id])
+  subjectId Int
+}
+
+model DatesOnUsers {
+  id       Int   @id @default(autoincrement())
+  User     User @relation(fields: [userId], references: [id])
+  userId   Int
+  Date     Date @relation(fields: [dateId], references: [id])
+  dateId   Int
+  priority Int
+
+  @@unique([userId, dateId])
+}

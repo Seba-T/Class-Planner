@@ -69,15 +69,15 @@ async function getVis(viewOption, startDay) {
       const users = await getUsersPerDayAndSubject(startDay);
       const grdRows = schedule[startDay.getDay() - 1].length;
       const grdClms = 1;
-      let notUsed = true;
+      let used = {};
       const cellContent = schedule[startDay.getDay() - 1].map((subj) => {
         // array full of subjects, ordered by hour
         return {
           title: subj,
           users:
-            users.hasOwnProperty(subj) && notUsed
+            users.hasOwnProperty(subj) && !used[subj]
               ? users[subj].map((user) => {
-                  notUsed = false;
+                  used[subj] = true;
                   return [
                     user.User.surname.toLowerCase() +
                       " " +
@@ -88,6 +88,14 @@ async function getVis(viewOption, startDay) {
               : false,
           date: new Date(startDay.getTime()).toISOString(),
         };
+      });
+      cellContent.forEach((elm, idx) => {
+        if (
+          cellContent?.[idx - 1]?.title === elm.title &&
+          cellContent?.[idx - 1].users.length > 4
+        ) {
+          cellContent[idx].users = cellContent[idx - 1].users.splice(4);
+        }
       });
       return { cellContent, grdRows, grdClms };
     }
@@ -102,20 +110,27 @@ async function getVis(viewOption, startDay) {
       let newDate = new Date(startDay.getTime());
       for (let day = 0; day < grdClms; day++) {
         const users = await getUsersPerDayAndSubject(newDate);
-        let notUsed = true;
+        let used = {};
         schedule[day].forEach((subj, indexSubj) => {
           const index = day + indexSubj * grdClms;
           cellContent[index] = {
             title: subj,
             users:
-              users.hasOwnProperty(subj) && notUsed
+              users.hasOwnProperty(subj) && !used[subj]
                 ? users[subj].map((user) => {
-                    notUsed = false;
+                    used[subj] = true;
                     return [user.User.surname.toLowerCase(), user.priority];
                   })
                 : false,
             date: new Date(newDate.getTime()).toISOString(),
           };
+
+          if (
+            cellContent?.[index - grdClms]?.title === cellContent[index].title &&
+            cellContent?.[index - grdClms]?.users.length > 4
+          ) {
+            cellContent[index].users = cellContent[index - grdClms].users.splice(4);
+          }
         });
         dateHelper.addDays(newDate, 1);
       }
@@ -139,7 +154,6 @@ async function getVis(viewOption, startDay) {
           ),
           date: newDate.toISOString(),
         };
-        // console.log(cellContent[day].users);
         dateHelper.addDays(newDate, 1);
       }
       return { cellContent, grdRows, grdClms };
@@ -151,7 +165,6 @@ async function getVis(viewOption, startDay) {
       const cellTitles = await Promise.all(
         new Array(4).fill("").map(async (_, index) => {
           const newDate = new Date(startDay.getTime());
-
           newDate.setMonth(newDate.getMonth() + index);
           return await displayCalendarGrid("Month", new Date(newDate));
         })
