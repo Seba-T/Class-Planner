@@ -32,8 +32,6 @@ async function pickUpWhereYouLeftOff() {
   }
 }
 async function submitSignUpAction(action, date, subject, priority) {
-<<<<<<< HEAD
-=======
   const currentLocalStorage = JSON.parse(localStorage.getItem("dates"));
   if (action === "CREATE") {
     currentLocalStorage.push({ date, subject });
@@ -45,7 +43,6 @@ async function submitSignUpAction(action, date, subject, priority) {
     );
     localStorage.setItem("dates", JSON.stringify(newLocalStorage));
   }
->>>>>>> 13f0c20271ec5cd20faae46e2775df6ffd29eae1
   const submitData = JSON.stringify({ date, subject, priority, action });
   let response = await fetch(`${domainName}/signupfordate`, {
     method: "POST",
