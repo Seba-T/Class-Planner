@@ -227,7 +227,7 @@ app.post("/signupfordate", async (req, res) => {
       })
     ).id;
     switch (req.body.action) {
-      case "CREATE":
+      case "CREATE": {
         await prismaClient.datesOnUsers.create({
           data: {
             priority: req.body.priority,
@@ -236,7 +236,8 @@ app.post("/signupfordate", async (req, res) => {
           },
         });
         break;
-      case "DELETE":
+      }
+      case "DELETE": {
         const deleteId = (
           await prismaClient.datesOnUsers.findFirst({
             where: { userId: userId, dateId: dateId },
@@ -247,6 +248,7 @@ app.post("/signupfordate", async (req, res) => {
           where: { id: deleteId },
         });
         break;
+      }
       default:
         return 0;
     }
@@ -305,9 +307,16 @@ app.post("/createdate", async (req, res) => {
     if (role === "admin") {
       const dates = req.body.dates.map((a) => new Date(a));
       dates.forEach((date) => date.setHours(1, 0, 0, 0));
-      const newDates = await Promise.all(
-        dates.map(
-          async (date) =>
+      const resp = await Promise.all(
+        dates.map(async (date) => {
+          const dateAlreadyExists =
+            date.toString() ===
+            (
+              await prismaClient.date.findFirst({
+                where: { date: date, Subject: { name: req.body.subject } },
+              })
+            )?.date.toString();
+          if (!dateAlreadyExists) {
             await prismaClient.date.create({
               data: {
                 date: date,
@@ -315,10 +324,20 @@ app.post("/createdate", async (req, res) => {
                   connect: { name: req.body.subject },
                 },
               },
-            })
-        )
+            });
+          } else {
+            return `${req.body.subject} del ${date.toISOString().slice(0, 10)}`;
+          }
+        })
       );
-      res.status(200).send(newDates);
+
+      res
+        .status(200)
+        .send(
+          `Ops, non è stato possibile aggiungere le date di ${resp.join(
+            ", "
+          )}, perché erano già presenti.`
+        );
     } else {
       res.status(422).send("You are not allowed to make this request!");
     }

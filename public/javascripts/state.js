@@ -3,6 +3,7 @@ window.state = {
     name: null,
     googleId: null,
     dates: null,
+    role: null,
   },
   _previousStates: [],
   _currentView: {

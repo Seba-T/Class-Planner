@@ -37,17 +37,6 @@ async function pickUpWhereYouLeftOff() {
   }
 }
 async function submitSignUpAction(action, date, subject, priority) {
-  const currentLocalStorage = JSON.parse(localStorage.getItem("dates"));
-  if (action === "CREATE") {
-    currentLocalStorage.push({ date, subject });
-    localStorage.setItem("dates", JSON.stringify(currentLocalStorage));
-  } else {
-    const newLocalStorage = currentLocalStorage.filter(
-      (elm) =>
-        elm.subject !== subject || elm.date.slice(0, 10) !== date.slice(0, 10)
-    );
-    localStorage.setItem("dates", JSON.stringify(newLocalStorage));
-  }
   const submitData = JSON.stringify({ date, subject, priority, action });
   let response = await fetch(`${domainName}/signupfordate`, {
     method: "POST",
@@ -70,7 +59,7 @@ async function submitSignUpAction(action, date, subject, priority) {
     }
     $("#confirm-alert").modal("hide");
     location.reload();
-  } else if (response.status === 403) {
+  } else {
     alert("request failed");
     location.reload();
   }

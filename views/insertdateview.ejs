@@ -176,6 +176,12 @@
       });
       document.querySelector("#submit-button").classList.toggle("disabled");
       if (request.status === 200) {
+        document
+          .querySelector(" .modal-header")
+          .insertAdjacentHTML(
+            "afterend",
+            `<div style="margin: 0px 6px;"> ${await request.text()}</div>`
+          );
         $("#confirm-alert").modal("show");
       }
     });

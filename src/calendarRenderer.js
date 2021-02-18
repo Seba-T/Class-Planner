@@ -33,7 +33,6 @@ async function getUsersPerDayAndSubject(date) {
     elm.users.sort((a, b) => a.priority - b.priority);
     resp[elm.Subject.name] = elm.users;
   });
-  // console.log(resp);
   return query.length > 0 ? resp : false;
 }
 
