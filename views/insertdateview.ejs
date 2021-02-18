@@ -33,7 +33,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Success!!</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Success!</h5>
           </div>
 
           <div class="modal-footer">
@@ -180,7 +180,7 @@
           .querySelector(" .modal-header")
           .insertAdjacentHTML(
             "afterend",
-            `<div style="margin: 0px 6px;"> ${await request.text()}</div>`
+            `<div style="margin: 0px 6px;">${await request.text()}</div>`
           );
         $("#confirm-alert").modal("show");
       }

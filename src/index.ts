@@ -326,7 +326,9 @@ app.post("/createdate", async (req, res) => {
               },
             });
           } else {
-            return `${req.body.subject} del ${date.toISOString().slice(0, 10)}`;
+            return `<i>${req.body.subject.toLowerCase()}</i> del <i>${date
+              .toISOString()
+              .slice(0, 10)}</i>`;
           }
         })
       );
