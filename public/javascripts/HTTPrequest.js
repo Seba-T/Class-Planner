@@ -39,7 +39,7 @@ async function submitSignUpAction(action, date, subject, priority) {
   } else {
     const newLocalStorage = currentLocalStorage.filter(
       (elm) =>
-        elm.subject !== subject || elm.date.slice(0, 11) !== date.slice(0, 11)
+        elm.subject !== subject || elm.date.slice(0, 10) !== date.slice(0, 10)
     );
     localStorage.setItem("dates", JSON.stringify(newLocalStorage));
   }
