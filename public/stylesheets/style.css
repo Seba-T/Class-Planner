@@ -139,8 +139,8 @@ p {
   display: block;
   width: fit-content;
   width: -moz-fit-content;
-  text-transform: capitalize;
-  background-color: #eaaf6c;
+  text-transform: capitalize; 
+  background-color: #ff7a86;
 }
 .priority_2 {
   border-radius: 51px;
@@ -151,7 +151,7 @@ p {
   width: fit-content;
   width: -moz-fit-content;
   text-transform: capitalize;
-  background-color: #d1b3d5;
+  background-color: #eaaf6c;
 }
 .priority_3 {
   border-radius: 51px;
