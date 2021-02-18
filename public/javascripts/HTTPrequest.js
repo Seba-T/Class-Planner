@@ -32,6 +32,20 @@ async function pickUpWhereYouLeftOff() {
   }
 }
 async function submitSignUpAction(action, date, subject, priority) {
+<<<<<<< HEAD
+=======
+  const currentLocalStorage = JSON.parse(localStorage.getItem("dates"));
+  if (action === "CREATE") {
+    currentLocalStorage.push({ date, subject });
+    localStorage.setItem("dates", JSON.stringify(currentLocalStorage));
+  } else {
+    const newLocalStorage = currentLocalStorage.filter(
+      (elm) =>
+        elm.subject !== subject || elm.date.slice(0, 10) !== date.slice(0, 10)
+    );
+    localStorage.setItem("dates", JSON.stringify(newLocalStorage));
+  }
+>>>>>>> 13f0c20271ec5cd20faae46e2775df6ffd29eae1
   const submitData = JSON.stringify({ date, subject, priority, action });
   let response = await fetch(`${domainName}/signupfordate`, {
     method: "POST",

@@ -139,7 +139,11 @@ p {
   display: block;
   width: fit-content;
   width: -moz-fit-content;
+<<<<<<< HEAD
   text-transform: capitalize; 
+=======
+  text-transform: capitalize;
+>>>>>>> 13f0c20271ec5cd20faae46e2775df6ffd29eae1
   background-color: #ff7a86;
 }
 .priority_2 {
