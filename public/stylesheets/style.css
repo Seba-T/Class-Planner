@@ -31,12 +31,22 @@ body {
   .hideCont {
     display: none;
   }
+  .priority_1,
+  .priority_2,
+  .priority_3 {
+    display: inline-block !important;
+  }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
   #app-calendar {
     max-height: 400px;
+  }
+  .priority_1,
+  .priority_2,
+  .priority_3 {
+    display: block;
   }
 }
 @media only screen and (min-width: 770px) {
@@ -139,7 +149,7 @@ p {
   display: block;
   width: fit-content;
   width: -moz-fit-content;
-  text-transform: capitalize; 
+  text-transform: capitalize;
   background-color: #ff7a86;
 }
 .priority_2 {

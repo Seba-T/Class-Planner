@@ -150,6 +150,7 @@ app.post("/tokensignin", async (req, res) => {
     res.status(403).send(err);
   }
 });
+var timeOut;
 app.post("/getcalendarview", async (req, res) => {
   var updateLastView;
   var alreadyCalled = false;
@@ -175,19 +176,18 @@ app.post("/getcalendarview", async (req, res) => {
   const cookie = req.cookies.session;
   const lastDate = new Date(req.body.date);
   const lastViewOption = req.body.viewOption;
-  var timeOut;
-  updateLastView(cookie, lastDate, lastViewOption);
-  // if (lastViewOption === "Day") {
-  //   updateLastView(cookie, lastDate, lastViewOption);
-  //   clearTimeout(timeOut);
-  //   alreadyCalled = false;
-  // } else if (!alreadyCalled) {
-  //   alreadyCalled = true;
-  //   timeOut = setTimeout(() => {
-  //     alreadyCalled = false;
-  //     updateLastView(cookie, lastDate, lastViewOption);
-  //   }, 20 * 1000);
-  // }
+  // updateLastView(cookie, lastDate, lastViewOption);
+  if (lastViewOption === "Day") {
+    updateLastView(cookie, lastDate, lastViewOption);
+    clearTimeout(timeOut);
+    alreadyCalled = false;
+  } else if (!alreadyCalled) {
+    alreadyCalled = true;
+    timeOut = setTimeout(() => {
+      alreadyCalled = false;
+      updateLastView(cookie, lastDate, lastViewOption);
+    }, 20 * 1000);
+  }
   res.send(response);
 });
 

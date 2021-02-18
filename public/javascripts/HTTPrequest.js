@@ -18,6 +18,11 @@ async function displayCalendarGrid(viewOption, date) {
   }
   const html = await response.text();
   document.querySelector("#app-calendar").innerHTML = html;
+  document.querySelectorAll(" .availableDate").forEach((elm) => {
+    if (elm.childElementCount > 2) {
+      elm.style["padding-bottom"] = "0px";
+    }
+  });
   const weekdays = document.querySelector("#weekdays");
   if (viewOption === "Week") weekdays.style.display = "inline-flex";
   else weekdays.style.display = "none";

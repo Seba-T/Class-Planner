@@ -41,7 +41,7 @@ async function getDatesPerMonth(date) {
   const startDate = new Date(date.getTime());
   startDate.setHours(1, 0, 0, 0);
   const endDate = new Date(startDate);
-  endDate.setMonth(endDate.getMonth() + 1);
+  endDate.setDate(endDate.getDate() + 35);
   const query = await prismaClient.date.findMany({
     where: {
       AND: [
@@ -81,7 +81,7 @@ async function getVis(viewOption, startDay) {
                   return [
                     user.User.surname.toLowerCase() +
                       " " +
-                      user.User.name.toLowerCase(),
+                      `<span class="hideCont"> ${user.User.name.toLowerCase()} </span>`,
                     user.priority,
                   ];
                 })
@@ -119,17 +119,23 @@ async function getVis(viewOption, startDay) {
               users.hasOwnProperty(subj) && !used[subj]
                 ? users[subj].map((user) => {
                     used[subj] = true;
-                    return [user.User.surname.toLowerCase(), user.priority];
+                    return [
+                      `<span class="hideCont"> ${user.User.surname.toLowerCase()} </span>`,
+                      user.priority,
+                    ];
                   })
                 : false,
             date: new Date(newDate.getTime()).toISOString(),
           };
 
           if (
-            cellContent?.[index - grdClms]?.title === cellContent[index].title &&
+            cellContent?.[index - grdClms]?.title ===
+              cellContent[index].title &&
             cellContent?.[index - grdClms]?.users.length > 4
           ) {
-            cellContent[index].users = cellContent[index - grdClms].users.splice(4);
+            cellContent[index].users = cellContent[
+              index - grdClms
+            ].users.splice(4);
           }
         });
         dateHelper.addDays(newDate, 1);
@@ -186,7 +192,9 @@ async function displayCalendarGrid(viewOption, startDay) {
 
   const style = `
     grid-template-columns: repeat(${grdClms}, calc(100%/ ${grdClms}));
-    grid-template-rows: repeat(${grdRows}, calc(100%/ ${grdRows}));
+    grid-template-rows: repeat(${grdRows}, ${
+    viewOption === "Day" ? "auto" : `calc(100%/ ${grdRows})`
+  });
   `;
 
   const gridContent = [];
@@ -217,7 +225,7 @@ async function displayCalendarGrid(viewOption, startDay) {
         ${
           viewOption !== "Year" && viewOption !== "Month"
             ? cellContent[x].title.trim().slice(0, 3) +
-              '<span class="hideCont">' +
+              '<span class="hideCont"> ' +
               cellContent[x].title.trim().slice(3) +
               "</span>"
             : cellContent[x].title
