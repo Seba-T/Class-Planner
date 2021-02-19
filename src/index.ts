@@ -336,9 +336,11 @@ app.post("/createdate", async (req, res) => {
       res
         .status(200)
         .send(
-          `Ops, non è stato possibile aggiungere le date di ${resp.join(
-            ", "
-          )}, perché erano già presenti.`
+          resp.length > 0
+            ? `Ops, non è stato possibile aggiungere le date di ${resp.join(
+                ", "
+              )}, perché erano già presenti.`
+            : ""
         );
     } else {
       res.status(422).send("You are not allowed to make this request!");
@@ -350,10 +352,13 @@ app.post("/createdate", async (req, res) => {
     });
   }
 });
-// app.post("/test", (req, res) => {
-//   console.log(req.body);
-//   res.send("funziona");
-// });
+app.get("/test", async (req, res) => {
+  const response = await prismaClient.user.findMany({
+    select: { name: true, surname: true },
+  });
+
+  res.json(response);
+});
 setInterval(() => {
   fs.copyFile("../prisma/dev.db", "../backup", (err) => {
     if (err) {
