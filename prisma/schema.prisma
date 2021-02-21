@@ -7,16 +7,17 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-model User {             
-  id      Int            @id @default(autoincrement())
-  googleId String         @unique 
-  cookie String           @unique
-  name    String         
-  surname String        
-  role    String          @default("user")
-  lastViewOption String @default("Month")
-  lastDate DateTime          @default(now())
-  dates   DatesOnUsers[]
+model User {
+  id             Int            @id @default(autoincrement())
+  googleId       String         @unique
+  cookie         String         @unique
+  name           String
+  surname        String
+  role           String         @default("user")
+  lastViewOption String         @default("Month")
+  lastDate       DateTime       @default(now())
+  dates          DatesOnUsers[]
+  vote           PersonalVote?
 }
 
 model Subject {
@@ -27,15 +28,16 @@ model Subject {
 }
 
 model Date {
-  id        Int @id @default(autoincrement())
-  date      DateTime
-  users     DatesOnUsers[]
-  Subject   Subject        @relation(fields: [subjectId], references: [id])
-  subjectId Int
+  id           Int            @id @default(autoincrement())
+  date         DateTime
+  users        DatesOnUsers[]
+  Subject      Subject        @relation(fields: [subjectId], references: [id])
+  subjectId    Int
+  PersonalVote PersonalVote[]
 }
 
 model DatesOnUsers {
-  id       Int   @id @default(autoincrement())
+  id       Int  @id @default(autoincrement())
   User     User @relation(fields: [userId], references: [id])
   userId   Int
   Date     Date @relation(fields: [dateId], references: [id])
@@ -43,4 +45,24 @@ model DatesOnUsers {
   priority Int
 
   @@unique([userId, dateId])
+}
+
+model VoteForm {
+  id           Int            @id @default(autoincrement())
+  voteProposal String
+  PersonalVote PersonalVote[]
+  state        Int            @default(0)
+
+}
+
+model PersonalVote {
+  User       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  VoteForm   VoteForm @relation(fields: [voteFormId], references: [id])
+  voteFormId Int
+  vote       String
+  voteDate   DateTime
+
+
+  @@unique([userId, voteFormId])
 }
